@@ -2,6 +2,7 @@ import numpy as np
 import json
 import os
 
+
 class Instance():
     def __init__(self, m, n, l, s, D):
         self.m = m
@@ -94,6 +95,7 @@ def load_data_cp(path, instance):
             data[file] = (read_instance_cp(path + "/" + file))
             i += 1
     return data
+
 
 def print_output(approach, time, optimal, obj, sol, instance_num, output_path):
     json_dict = {}

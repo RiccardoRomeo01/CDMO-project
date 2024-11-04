@@ -5,13 +5,15 @@ from CPMOD.cp.solver import CPsolver
 from MIPMOD.MIP_CLASS import MIPSolver
 from SATMOD.SAT.solver import SATsolver
 '''
-from SMT.utils import load_data_cp, load_data_sat_mip
+
+from SMTMOD.SMT.SMT_solver import SMTsolver
+from SMTMOD.SMT.utils import load_data_cp, load_data_sat_mip
 
 
 def main():
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("-a", "--approach", help="Select a modelling appraoch between cp sat, smt and mip",
+    parser.add_argument("-a", "--approach", help="Select a modelling approach between cp sat, smt and mip",
                         default="cp", type=str)
 
     parser.add_argument("-m", "--model", help="Select a model for the solver choosen, look for additional information in the cp folder ",
@@ -51,22 +53,24 @@ def main():
     print("Loaded!")
 
 
-    if args.approach == "cp":
+    if args.approach == "smt":
+        solver = SMTsolver(
+            input_data = input_data,
+            timeout = int(args.timeout),
+            output_path = args.output_dir,
+            solver_name=args.solver,
+            strategy = args.strategy,
+            symmetry_breaking = args.symmetry_breaking,
+            fair_division = args.fair_division
+        )
+        '''
+    elif args.approach == "cp":
         solver = CPsolver(
             data=input_data, 
             output_dir=args.output_dir, 
             timeout=int(args.timeout), 
             model=args.model
-        )
-    elif args.approach == "mip":
-        solver = MIPSolver(
-            instance_number=args.num_instance,
-            data=input_data, 
-            output_dir=args.output_dir, 
-            timeout=int(args.timeout), 
-            model=args.solver,
-            symmetry_breaking = args.symmetry_breaking
-        )
+        ) 
     elif args.approach == "sat":
         solver = SATsolver(
             input_data = input_data,
@@ -76,17 +80,16 @@ def main():
             strategy= args.strategy,
             symmetry_breaking = args.symmetry_breaking,
             fair_division = args.fair_division
-        )
-    elif args.approach == "smt":
-        solver = SMTsolver(
-            input_data = input_data,
-            timeout = int(args.timeout),
-            output_path = args.output_dir,
+        ) 
+    elif args.approach == "mip":
+        solver = MIPSolver(
+            instance_number=args.num_instance,
+            data=input_data, 
+            output_dir=args.output_dir, 
+            timeout=int(args.timeout), 
             model=args.solver,
-            strategy = args.strategy,
-            symmetry_breaking = args.symmetry_breaking,
-            fair_division = args.fair_division
-        )
+            symmetry_breaking = args.symmetry_breaking
+        ) '''
     else:
         raise argparse.ArgumentError(None, "Please select a solver between cp, sat, smt or mip")
 

@@ -1,0 +1,138 @@
+{
+    "z3 linear no_fair": {
+        "time": 0,
+        "optimal": true,
+        "obj": 14,
+        "sol": [
+            [
+                4,
+                3,
+                1
+            ],
+            [
+                2,
+                5,
+                6
+            ]
+        ]
+    },
+    "z3 linear fair": {
+        "time": 0,
+        "optimal": true,
+        "obj": 14,
+        "sol": [
+            [
+                4,
+                3,
+                1
+            ],
+            [
+                2,
+                5,
+                6
+            ]
+        ]
+    },
+    "z3 binary no_fair": {
+        "time": 1,
+        "optimal": true,
+        "obj": 14,
+        "sol": [
+            [
+                4,
+                3,
+                1
+            ],
+            [
+                2,
+                5,
+                6
+            ]
+        ]
+    },
+    "z3 binary fair": {
+        "time": 0,
+        "optimal": true,
+        "obj": 14,
+        "sol": [
+            [
+                4,
+                3,
+                1
+            ],
+            [
+                2,
+                5,
+                6
+            ]
+        ]
+    },
+    "cvc5 linear no_fair": {
+        "time": 0,
+        "optimal": true,
+        "obj": 14,
+        "sol": [
+            [
+                4,
+                3,
+                1
+            ],
+            [
+                2,
+                5,
+                6
+            ]
+        ]
+    },
+    "cvc5 linear fair": {
+        "time": 0,
+        "optimal": true,
+        "obj": 14,
+        "sol": [
+            [
+                4,
+                3,
+                1
+            ],
+            [
+                2,
+                5,
+                6
+            ]
+        ]
+    },
+    "cvc5 binary no_fair": {
+        "time": 1,
+        "optimal": true,
+        "obj": 14,
+        "sol": [
+            [
+                4,
+                3,
+                1
+            ],
+            [
+                2,
+                5,
+                6
+            ]
+        ]
+    },
+    "cvc5 binary fair": {
+        "time": 0,
+        "optimal": true,
+        "obj": 14,
+        "sol": [
+            [
+                4,
+                3,
+                1
+            ],
+            [
+                2,
+                5,
+                6
+            ]
+        ]
+    }
+}
