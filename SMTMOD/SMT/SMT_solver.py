@@ -1,6 +1,7 @@
 from pysmt.shortcuts import Symbol, And, GE, LE, Int, Solver, Equals, Implies, Or, NotEquals, Not, Iff, Plus, Ite, LT, ExactlyOne, ToReal
 from pysmt.typing import INT
 from pysmt.logics import QF_LIA
+from pysmt.exceptions import SolverReturnedUnknownResultError
 import time as t
 from SMTMOD.SMT.SMT_constants import *
 from SMTMOD.SMT.SMT_utils import *
@@ -252,68 +253,78 @@ class SMTsolver:
         solver.push()
 
         while(is_sat):
-            # prendo lo stato dal solver
-            status = solver.check_sat()
 
-            if status is True:
-                # ho trovato una soluzione quindi incremento il counter
-                solution_number = solution_number + 1
-                # print(solution_number)
+            try: 
+                # prendo lo stato dal solver
+                status = solver.check_sat()
 
-                # salvo questo modello come previousModel
-                previousModel = solver.get_model()
+                if status is True:
+                    # ho trovato una soluzione quindi incremento il counter
+                    solution_number = solution_number + 1
+                    # print(solution_number)
 
-                # calcolo quanto tempo è passato
-                current_time = t.time()
-                passed_time = int((current_time - start_time))
+                    # salvo questo modello come previousModel
+                    previousModel = solver.get_model()
 
-                # setto il timeout per il solver
-                # self.set_solver((timeout - passed_time)*1000, solver)
-                self.set_solver((timeout - passed_time), solver)
-
-                # prendo la objective function dal modello
-                previous_obj_function = previousModel.get_value(obj_function)
-                # print(previous_obj_function)
-                # print(type(previous_obj_function))
-
-                # impongo al solver di trovare una soluzione migliore
-                solver.add_assertion(LT(obj_function, previous_obj_function))
-
-            elif status is False:
-                # se il counter di soluzioni è a zero vuol dire che non ho mai trovato almeno una soluzione
-                if solution_number == 0:
-                    print(status)
+                    # calcolo quanto tempo è passato
                     current_time = t.time()
                     passed_time = int((current_time - start_time))
-                    return passed_time, False, "N/A unsat", []
-                # esco dal ciclo di ricerca delle soluzioni
-                is_sat = False
 
-            else:
-                # se il counter di soluzioni è a zero vuol dire che non ha avuto il tempo di trovarla
-                if solution_number == 0:
-                    print("TIME EXCEEDED")
-                    return timeout, False, "N/A unknown", []
-                
-                # esco dal ciclo di ricerca delle soluzioni
-                is_sat = False
+                    # setto il timeout per il solver
+                    # self.set_solver((timeout - passed_time)*1000, solver)
+                    self.set_solver((timeout - passed_time), solver)
+
+                    # prendo la objective function dal modello
+                    previous_obj_function = previousModel.get_value(obj_function)
+                    # print(previous_obj_function)
+                    # print(type(previous_obj_function))
+
+                    # impongo al solver di trovare una soluzione migliore
+                    solver.add_assertion(LT(obj_function, previous_obj_function))
+
+                elif status is False:
+                    # se il counter di soluzioni è a zero vuol dire che non ho mai trovato almeno una soluzione
+                    if solution_number == 0:
+                        print(status)
+                        current_time = t.time()
+                        passed_time = int((current_time - start_time))
+                        return passed_time, False, "N/A unsat", []
+                    # esco dal ciclo di ricerca delle soluzioni
+                    is_sat = False
+
+                else:
+                    # se il counter di soluzioni è a zero vuol dire che non ha avuto il tempo di trovarla
+                    if solution_number == 0:
+                        print("TIME EXCEEDED")
+                        return timeout, False, "N/A unknown", []
+                    
+                    # esco dal ciclo di ricerca delle soluzioni
+                    is_sat = False
+                    is_optimal = False
+
+            except SolverReturnedUnknownResultError:
+                print("Solver encountered an unknown result error. Using the last known solution.")
                 is_optimal = False
+                break
 
         current_time = t.time()
         passed_time = current_time - start_time
 
         # come modello riprendo l'ultimo trovato
-        model = previousModel
+        model = previousModel if previousModel is not None else None
         
-        visited_locations = [[] for _ in range(m)]
-        for i in range(m):
-            for k in X[i]:
-                sol_assignment = model.get_value(k)
-                if sol_assignment != Int(n+1):
-                    visited_locations[i].append(sol_assignment)
-        
-        return int(passed_time), is_optimal, model.get_value(obj_function), visited_locations
-    
+
+        if model is not None:
+            visited_locations = [[] for _ in range(m)]
+            for i in range(m):
+                for k in X[i]:
+                    sol_assignment = model.get_value(k)
+                    if sol_assignment != Int(n+1):
+                        visited_locations[i].append(sol_assignment)
+            
+            return int(passed_time), is_optimal, model.get_value(obj_function), visited_locations
+        else:
+            return int(passed_time), False, "N/A no_solution", []
 
     def binary_optimization(self, instance, solver, timeout, X, carried_load, traveled_distance, obj_function):
 
@@ -337,45 +348,26 @@ class SMTsolver:
         
         while(is_sat):
 
-            # If upper_bound - lower_bound > 1 then we set the middle_bound in the middle of those
-            if (upper_bound - lower_bound > 1):
-                middle_bound = int(np.ceil((upper_bound + lower_bound) / 2))
-            # If upper_bound - lower_bound == 1 we cannot devide the search space in two: we choose as middle bound the smaller bound
-            elif (upper_bound - lower_bound == 1):
-                middle_bound = int(lower_bound)
-                is_sat = False
-            elif (upper_bound - lower_bound == 0):
-                middle_bound = int(lower_bound)
-                is_sat = False
-                    
-            if (upper_bound - lower_bound < 0):
-                is_sat = False
+            try: 
+                # If upper_bound - lower_bound > 1 then we set the middle_bound in the middle of those
+                if (upper_bound - lower_bound > 1):
+                    middle_bound = int(np.ceil((upper_bound + lower_bound) / 2))
+                # If upper_bound - lower_bound == 1 we cannot devide the search space in two: we choose as middle bound the smaller bound
+                elif (upper_bound - lower_bound == 1):
+                    middle_bound = int(lower_bound)
+                    is_sat = False
+                elif (upper_bound - lower_bound == 0):
+                    middle_bound = int(lower_bound)
+                    is_sat = False
+                        
+                if (upper_bound - lower_bound < 0):
+                    is_sat = False
 
-            # print(f"Middle bound is: {middle_bound}")
-
-
-            # We impose the solver to find an objective function smaller than the middle bound  (a better solution)
-            solver.add_assertion(LE(obj_function, Int(middle_bound)))
-
-            # We set the time for next solution
-            current_time = t.time()
-            passed_time = int(current_time - start_time)
-            # self.set_solver((timeout - passed_time)*1000, solver)
-            self.set_solver((timeout - passed_time), solver)
-
-            
-            # prendo lo stato dal solver
-            status = solver.check_sat()
+                # print(f"Middle bound is: {middle_bound}")
 
 
-            if status is True:
-                solution_number = solution_number + 1
-                # print(f"Solution number: {solution_number}, status: {status}")
-                # print()
-
-
-                # salvo questo modello come previousModel
-                previousModel = solver.get_model()
+                # We impose the solver to find an objective function smaller than the middle bound  (a better solution)
+                solver.add_assertion(LE(obj_function, Int(middle_bound)))
 
                 # We set the time for next solution
                 current_time = t.time()
@@ -383,45 +375,71 @@ class SMTsolver:
                 # self.set_solver((timeout - passed_time)*1000, solver)
                 self.set_solver((timeout - passed_time), solver)
 
-                # prendo la objective function dal modello
-                previous_obj_function = previousModel.get_value(obj_function)
-
-                # update dell'upper_bound
-                upper_bound = previous_obj_function.constant_value()
-                # print(f"il nuovo upper bound è: {upper_bound}")
                 
-            elif status is False:
-                # print(status)
-                # print()
-                solution_number = solution_number + 1
+                # prendo lo stato dal solver
+                status = solver.check_sat()
 
 
-                # We delete the last solver (useless solver)
-                solver.pop()
-                # We retake the previous one
-                solver.push()
-                # We set the lower bound as the middle because we need to search in the second part of the search space
-                lower_bound = int(middle_bound)
+                if status is True:
+                    solution_number = solution_number + 1
+                    # print(f"Solution number: {solution_number}, status: {status}")
+                    # print()
 
-            else:
-                if solution_number == 0:
-                    return timeout, False, "N/A", []
-                
-                is_sat = False
+
+                    # salvo questo modello come previousModel
+                    previousModel = solver.get_model()
+
+                    # We set the time for next solution
+                    current_time = t.time()
+                    passed_time = int(current_time - start_time)
+                    # self.set_solver((timeout - passed_time)*1000, solver)
+                    self.set_solver((timeout - passed_time), solver)
+
+                    # prendo la objective function dal modello
+                    previous_obj_function = previousModel.get_value(obj_function)
+
+                    # update dell'upper_bound
+                    upper_bound = previous_obj_function.constant_value()
+                    # print(f"il nuovo upper bound è: {upper_bound}")
+                    
+                elif status is False:
+                    # print(status)
+                    # print()
+                    solution_number = solution_number + 1
+
+
+                    # We delete the last solver (useless solver)
+                    solver.pop()
+                    # We retake the previous one
+                    solver.push()
+                    # We set the lower bound as the middle because we need to search in the second part of the search space
+                    lower_bound = int(middle_bound)
+
+                else:
+                    if solution_number == 0:
+                        return timeout, False, "N/A", []
+                    
+                    is_sat = False
+                    is_optimal = False
+            except SolverReturnedUnknownResultError:
+                print("Solver encountered an unknown result error. Using the last known solution.")
                 is_optimal = False
-
+                break  
 
         current_time = t.time()
         passed_time = current_time - start_time
 
         # come modello riprendo l'ultimo trovato
-        model = previousModel
+        model = previousModel if previousModel is not None else None
         
-        visited_locations = [[] for _ in range(m)]
-        for i in range(m):
-            for k in X[i]:
-                sol_assignment = model.get_value(k)
-                if sol_assignment != Int(n+1):
-                    visited_locations[i].append(sol_assignment)
-        
-        return int(passed_time), is_optimal, model.get_value(obj_function), visited_locations
+        if model is not None:
+            visited_locations = [[] for _ in range(m)]
+            for i in range(m):
+                for k in X[i]:
+                    sol_assignment = model.get_value(k)
+                    if sol_assignment != Int(n+1):
+                        visited_locations[i].append(sol_assignment)
+            
+            return int(passed_time), is_optimal, model.get_value(obj_function), visited_locations
+        else:
+            return int(passed_time), False, "N/A no_solution", []
