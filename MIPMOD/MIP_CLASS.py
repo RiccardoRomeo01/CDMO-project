@@ -131,7 +131,7 @@ class MIPSolver:
                 # Output result if feasible solution was found
                 if result['sol']:
                     print_output(
-                        approach=f"{solver_name}{'_sb' if self.symmetry_breaking == "sb" else ''}",
+                        approach=f"{solver_name}{'_sb' if self.symmetry_breaking == 'sb' else ''}",
                         time=result['time'],
                         optimal=result['optimal'],
                         obj=result['obj'],

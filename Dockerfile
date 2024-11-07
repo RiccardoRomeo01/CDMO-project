@@ -51,6 +51,7 @@ ADD gurobi1103 /opt/gurobi1103
 # Copy and install Python dependencies from requirements.txt
 COPY requirements.txt .
 RUN python -m pip install --no-cache-dir -r requirements.txt
+RUN yes Y | pysmt-install --cvc5
 
 # Copy input files and scripts into the container
 COPY /input /input
