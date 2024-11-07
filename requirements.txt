@@ -3,3 +3,4 @@ matplotlib
 numpy
 minizinc
 z3-solver
+pysmt

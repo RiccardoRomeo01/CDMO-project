@@ -1,10 +1,10 @@
 import argparse
 
-'''
+
 from CPMOD.cp.solver import CPsolver
 from MIPMOD.MIP_CLASS import MIPSolver
 from SATMOD.SAT.solver import SATsolver
-'''
+
 
 from SMTMOD.SMT.SMT_solver import SMTsolver
 from SMTMOD.SMT.utils import load_data_cp, load_data_sat_mip
@@ -33,7 +33,7 @@ def main():
 
     parser.add_argument("-t", "--timeout", help="Timeout in seconds", default=300, type=int)
 
-    parser.add_argument("-s", "--strategy", help="Search strategy", default="linear", type= str)
+    parser.add_argument("-s", "--strategy", help="Search strategy", default="all", type= str)
 
     parser.add_argument("-b", "--symmetry_breaking", help="Symmetry breaking flag", default="sb", type=str)
 
@@ -63,7 +63,6 @@ def main():
             symmetry_breaking = args.symmetry_breaking,
             fair_division = args.fair_division
         )
-        '''
     elif args.approach == "cp":
         solver = CPsolver(
             data=input_data, 
@@ -89,7 +88,7 @@ def main():
             timeout=int(args.timeout), 
             model=args.solver,
             symmetry_breaking = args.symmetry_breaking
-        ) '''
+        )
     else:
         raise argparse.ArgumentError(None, "Please select a solver between cp, sat, smt or mip")
 
