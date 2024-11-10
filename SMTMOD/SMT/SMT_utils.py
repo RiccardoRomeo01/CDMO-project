@@ -66,6 +66,17 @@ def serialize_SMT_solution(sol):
     
     return serialized_sol
 
+
+def from_dict_to_list(dictionary):
+    m = len(dictionary)
+    solution = [[] for _ in range(m)]
+
+    for key, value in dictionary.items():
+        solution[key] = value
+
+    return solution
+
+
 def print_output_SMT(approach, time, optimal, obj, sol, instance_num, output_path):
     json_dict = {}
 
@@ -86,7 +97,7 @@ def print_output_SMT(approach, time, optimal, obj, sol, instance_num, output_pat
     json_dict[approach] = {
         "time": time,
         "optimal": optimal,
-        "obj": int(obj.serialize()),
+        "obj": obj,
         "sol": serialized_sol
     }
 

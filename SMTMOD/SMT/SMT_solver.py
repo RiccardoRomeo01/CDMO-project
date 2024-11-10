@@ -326,6 +326,8 @@ class SMTsolver:
         else:
             return int(passed_time), False, "N/A no_solution", []
 
+
+
     def binary_optimization(self, instance, solver, timeout, X, carried_load, traveled_distance, obj_function):
 
         m, n, l, s, D = instance.get_values()
