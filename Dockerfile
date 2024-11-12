@@ -19,6 +19,9 @@ RUN apt-get update \
        p7zip-full \
        zip \
        ca-certificates \
+       libgmp-dev \
+       autoconf \
+       gperf \
     && update-ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
@@ -46,12 +49,15 @@ RUN python -m pip install --no-cache-dir gurobipy==${GRB_VERSION}
 
 # Copy the license file and Gurobi folder to the container (adjust paths as needed)
 # Make sure the license file and Gurobi files are in the build context
-ADD gurobi1103 /opt/gurobi1103
+ADD /MIPMOD/gurobi1103 /opt/gurobi1103
 
 # Copy and install Python dependencies from requirements.txt
 COPY requirements.txt .
 RUN python -m pip install --no-cache-dir -r requirements.txt
 RUN yes Y | pysmt-install --cvc5
+RUN yes Y | pysmt-install --msat
+RUN yes Y | pysmt-install --yices
+
 
 # Copy input files and scripts into the container
 COPY /input /input
