@@ -2,7 +2,7 @@ from z3 import *
 from utils import *
 from SATMOD.SAT.SAT_utils import *
 import time as t
-from SATMOD.SAT.constants import *
+from SATMOD.SAT.SAT_constants import *
 
 class SATsolver:
     def __init__(self, input_data, output_path, strategy, timeout=300, encoding="np", symmetry_breaking="False", fair_division="no_fair"):

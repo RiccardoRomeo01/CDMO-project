@@ -1,13 +1,12 @@
 import argparse
+from utils import *
 
 '''
 from CPMOD.cp.solver import CPsolver
 from MIPMOD.MIP_CLASS import MIPSolver
-from SATMOD.SAT.solver import SATsolver
+from SATMOD.SAT.SAT_solver import SATsolver
 '''
-
-from SMTMOD.SMT.SMT_solverMulti import SMTsolver
-from SMTMOD.SMT.utils import load_data_cp, load_data_sat_mip
+from SMTMOD.SMT.SMT_solver import SMTsolver
 
 
 def main():

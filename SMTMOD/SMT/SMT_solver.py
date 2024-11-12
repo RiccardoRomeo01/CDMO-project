@@ -1,11 +1,11 @@
-from pysmt.shortcuts import Symbol, And, GE, LE, Int, Solver, Equals, Implies, Or, NotEquals, Not, Iff, Plus, Ite, LT, ExactlyOne, ToReal
+from pysmt.shortcuts import Symbol, And, GE, GT, LE, Int, Solver, Equals, Implies, Or, NotEquals, Not, Iff, Plus, Ite, LT, ExactlyOne, ToReal
 from pysmt.typing import INT
 from pysmt.logics import QF_LIA
 from pysmt.exceptions import SolverReturnedUnknownResultError
 import time as t
 from SMTMOD.SMT.SMT_constants import *
 from SMTMOD.SMT.SMT_utils import *
-from SMTMOD.SMT.utils import *
+import multiprocessing
 import numpy as np
 
 
@@ -20,70 +20,179 @@ class SMTsolver:
         self.strategy = strategy
         self.symmetry_breaking = symmetry_breaking
         self.fair_division = fair_division
-
-
-
-    def set_solver(self, timeout, solver_name):
-        self.solver_name = solver_name
-        self.timeout = timeout
-
-        # print(self.timeout)
-        if self.solver_name == 'z3':
-            return {'timeout': self.timeout} 
-        elif self.solver_name == 'cvc5':
-            return {'tlimit': str(self.timeout)}  
-        else:
-            return {} 
     
+        
+
+    def set_visited_locations(self, instance, X, model, shared_visited_locations):
+        m, n, l, s, D = instance.get_values()
+
+        # creo il percorso del corriere i-esimo
+        # print("la funzione è stata chiamata")
+        for i in range(m):
+            courier_path = []
+            for k in X[i]:
+                sol_assignment = model.get_value(k)
+                if sol_assignment != Int(n+1):
+                    courier_path.append(sol_assignment)
+                    
+            # print(courier_path)
+            shared_visited_locations[i] = courier_path
+
+
+
+    def solve_multiprocessing(self, instance):
+        start_time = t.time()
+
+        # creo il solver PYSMT
+        with Solver(name = self.solver_name, logic = QF_LIA) as solver:
+
+            # creo i valori condivisi per i multiprocessi
+            s_obj_function = multiprocessing.Value('i', 0)  # 'i' indica un intero, inizialmente è a zero
+            s_is_optimal = multiprocessing.Value('b', False) # 'b' indica che è un booleano, lo inizializzo a False
+            s_visited_locations = multiprocessing.Manager().dict() # uso un dizionario condiviso per i percorsi dei corrieri
+
+
+            # setto i contraints del solver
+            X, carried_load, traveled_distance, obj_function = self.set_constraints(instance, solver)
+
+
+            if self.strategy == "linear":
+                # creo il processo usando come ottimizzatore quello lineare
+                process = multiprocessing.Process(target=self.LO, args=(instance, X, solver, obj_function, s_obj_function, s_is_optimal, s_visited_locations))
+            elif self.strategy == "binary":
+                # creo il processo utilizzando come ottimizzatore quello binario
+                process = multiprocessing.Process(target=self.BO, args=(instance, X, solver, obj_function, s_obj_function, s_is_optimal, s_visited_locations))
+
+            
+            # faccio partire il processo con l'ottimizzatore
+            process.start()
+
+
+            # Aspetta che il processo termini o che scada il timeout, dal timeout devo togliere il tempo impiegato per creare il solver 
+            current_time = t.time()
+            passed_time = int((current_time - start_time))
+            process_timeout = self.timeout - passed_time
+            process.join(process_timeout)
+
+            # se dopo il tempo di timeout il processo è ancora vivo allora lo killo
+            if process.is_alive():
+                print("Timeout! Killing the optimizer...\n")
+                process.terminate()  # Termina il processo se è ancora attivo
+                process.join()  # Aspetta che il processo termini
+            else:
+                print("Process completed. The optimizer found the best solution!\n")
+
+
+        # Prendo i valori che mi servono: tempo impiegato dall'ottimizzatore, ultima objective function trovata, ottimalità e le visited_locations
+        # visited_locations = get_visited_locations(instance, X, solver)
+        current_time = t.time()
+        passed_time = current_time - start_time
+
+        # controllo i valori ritornati
+        if int(passed_time) >= 300 and s_is_optimal.value == False and s_obj_function.value == 0 and not s_visited_locations:
+            return int(passed_time), s_is_optimal.value, "N/A failed to encode", s_visited_locations
+
+        return int(passed_time), s_is_optimal.value, s_obj_function.value, s_visited_locations
+
 
 
     def solve(self):
 
-        if self.solver_name == "all" and self.strategy == "all" and self.fair_division == "all":
-            # per ogni solver passato
+        if self.solver_name == "all" and self.strategy == "all" and self.fair_division == "all" and self.symmetry_breaking == "all":
+
             for solver_name in SMT_SOLVERS:
-                # print(self.timeout)
-                print(f"\n\n \t\t##### SOLVING USING {solver_name} AS SOLVER #####")
-                # per ogni istanza passata in ingresso creiamo un solver e risolviamo il problema
+                self.solver_name = solver_name
+                print(f"\n\n \t\t##### SOLVING USING {self.solver_name} AS SOLVER #####")
+
                 for num, instance in self.input_data.items():
 
-                    # per ogni strategia di ottimizzazione
                     for strategy in STRATEGIES:
-
-                        # setto la strategia da usare
                         self.strategy = strategy
                         print(f"\nWe are using {self.strategy} optimization")
 
                         for f in LOAD_DIVISION:
 
                             self.fair_division = f
+                            for s in SYMMETRY_BREAKING:
 
+                                self.symmetry_breaking = s
+                                print(f"\n\t## Solution for instance {num} ##")
+
+                                passed_time, s_is_optimal, s_obj_function, s_visited_locations = self.solve_multiprocessing(instance)
+                                sol = from_dict_to_list(s_visited_locations)
+
+                                if s_is_optimal == 1:
+                                    optimality = True
+                                else:
+                                    optimality = False
+
+
+                                print(f"The solver took {passed_time} seconds to solve the instance")
+                                print(f"The optimal flag is: {optimality}")
+                                print(f"The objective function is: {s_obj_function}")
+                                print(f"The solution is: {sol}")
+                                
+                                print("\n")
+                                approach = solver_name + " " + self.strategy + " " + self.fair_division + " " + self.symmetry_breaking
+                                print_output_SMT(approach, passed_time, optimality, s_obj_function, sol, num, self.output_path + "/SMT/")
+
+
+        elif self.solver_name != "all" and self.strategy != "all" and self.fair_division != "all" and self.symmetry_breaking != "all":
+
+            print(f"\n\n \t\t##### SOLVING USING {self.solver_name} AS SOLVER #####")
+            print(f"\nWe are using {self.strategy} optimization")
+            for num, instance in self.input_data.items():
+                print(f"\n\t## Solution for instance {num} ##")
+                passed_time, s_is_optimal, s_obj_function, s_visited_locations = self.solve_multiprocessing(instance)
+                sol = from_dict_to_list(s_visited_locations)
+
+                if s_is_optimal == 1:
+                    optimality = True
+                else:
+                    optimality = False
+
+                print(f"The solver took {passed_time} seconds to solve the instance")
+                print(f"The optimal flag is: {optimality}")
+                print(f"The objective function is: {s_obj_function}")
+                print(f"The solution is: {sol}")
+                                
+                print("\n")
+                approach = self.solver_name + " " + self.strategy + " " + self.fair_division + " " + self.symmetry_breaking
+                print_output_SMT(approach, passed_time, optimality, s_obj_function, sol, num, self.output_path + "/SMT/")
+        
+        elif self.solver_name != "all" and self.strategy == "all" and self.fair_division == "all" and self.symmetry_breaking == "all":
+            print(f"\n\n \t\t##### SOLVING USING {self.solver_name} AS SOLVER #####")
+            for num, instance in self.input_data.items():
+
+                for strategy in STRATEGIES:
+                    self.strategy = strategy
+                    print(f"\nWe are using {self.strategy} optimization")
+
+                    for f in LOAD_DIVISION:
+
+                        self.fair_division = f
+                        for s in SYMMETRY_BREAKING:
+
+                            self.symmetry_breaking = s
                             print(f"\n\t## Solution for instance {num} ##")
-                            # devo risettare il timeout qui
-                            self.timeout = 300
-                            with Solver(name = solver_name, solver_options = self.set_solver(self.timeout*1000, solver_name), logic = QF_LIA) as solver:
-                                # print(self.timeout)
-                                # settiamo i constraints per questa istanza
-                                X, carried_load, traveled_distance, obj_function = self.set_constraints(instance, solver)
 
-                                # settiamo il metodo di ottimizzazione in base a quello passato
-                                if self.strategy == "linear":
-                                    time, optimal, obj, sol = self.linear_optimization(instance, solver, self.timeout, X, carried_load, traveled_distance, obj_function)
-                                elif self.strategy == "binary":
-                                    time, optimal, obj, sol = self.binary_optimization(instance, solver, self.timeout, X, carried_load, traveled_distance, obj_function)
-                            
+                            passed_time, s_is_optimal, s_obj_function, s_visited_locations = self.solve_multiprocessing(instance)
+                            sol = from_dict_to_list(s_visited_locations)
+
+                            if s_is_optimal == 1:
+                                optimality = True
+                            else:
+                                optimality = False
 
 
-                            print(f"The solver took {time} seconds to solve the instance")
-                            print(f"The optimal flag is: {optimal}")
-                            print(f"The objective function is: {obj}")
+                            print(f"The solver took {passed_time} seconds to solve the instance")
+                            print(f"The optimal flag is: {optimality}")
+                            print(f"The objective function is: {s_obj_function}")
                             print(f"The solution is: {sol}")
-
-                            approach = solver_name + " " + self.strategy + " " + self.fair_division
-
-                            print_output_SMT(approach, time, optimal, obj, sol, num, self.output_path + "/SMT/")
-
-
+                                
+                            print("\n")
+                            approach = self.solver_name + " " + self.strategy + " " + self.fair_division + " " + self.symmetry_breaking
+                            print_output_SMT(approach, passed_time, optimality, s_obj_function, sol, num, self.output_path + "/SMT/")
 
 
 
@@ -102,6 +211,7 @@ class SMTsolver:
             fair_division_coefficient = n // m
             k_upper_bound = fair_division_coefficient + 1
             print(f"Each courier has to bring at least {fair_division_coefficient} items")
+
 
         # DECISION VARIABLES
 
@@ -173,6 +283,17 @@ class SMTsolver:
                 load_division_assertions = [NotEquals(X[i][k], Int(n+1)) for k in range(1, k_upper_bound + 1)]
                 solver.add_assertion(at_least_k(load_division_assertions, fair_division_coefficient, f"fair_load_{i}"))
 
+        
+        #### SYMMETRY BREAKING CONSTRAINT ####
+        if self.symmetry_breaking == "sb":
+            # If the carriable load of two couriers is the same then we impose one of them to carry more load respect to the other
+            for i1 in range(m):
+                for i2 in range(i1 + 1, m):
+                    # the constraint must be applied to two different couriers
+                    if i1 != i2:
+                        solver.add_assertion(Implies(Equals(Int(l[i1]), Int(l[i2])),
+                                                    GT(carried_load[i1], carried_load[i2])))
+
 
 
         # carried_load[i] avrà la somma di tutti i pesi trasportati dal corrieri i
@@ -235,213 +356,140 @@ class SMTsolver:
 
 
 
-
-    def linear_optimization(self, instance, solver, timeout, X, carried_load, traveled_distance, obj_function):
-
-        m, n, l, s, D = instance.get_values()
-
-        previousModel = None
-        is_sat = True
-        is_optimal = True
-
-        # Start of the counter
-        start_time = t.time()
-        # This is a flag used to indicate the i-th found solution
-        solution_number = 0
-        
-        # salvo lo stato del solver prima della ricerca
-        solver.push()
-
-        while(is_sat):
-
-            try: 
-                # prendo lo stato dal solver
-                status = solver.check_sat()
-
-                if status is True:
-                    # ho trovato una soluzione quindi incremento il counter
-                    solution_number = solution_number + 1
-                    # print(solution_number)
-
-                    # salvo questo modello come previousModel
-                    previousModel = solver.get_model()
-
-                    # calcolo quanto tempo è passato
-                    current_time = t.time()
-                    passed_time = int((current_time - start_time))
-
-                    # setto il timeout per il solver
-                    # self.set_solver((timeout - passed_time)*1000, solver)
-                    self.set_solver((timeout - passed_time), solver)
-
-                    # prendo la objective function dal modello
-                    previous_obj_function = previousModel.get_value(obj_function)
-                    # print(previous_obj_function)
-                    # print(type(previous_obj_function))
-
-                    # impongo al solver di trovare una soluzione migliore
-                    solver.add_assertion(LT(obj_function, previous_obj_function))
-
-                elif status is False:
-                    # se il counter di soluzioni è a zero vuol dire che non ho mai trovato almeno una soluzione
-                    if solution_number == 0:
-                        print(status)
-                        current_time = t.time()
-                        passed_time = int((current_time - start_time))
-                        return passed_time, False, "N/A unsat", []
-                    # esco dal ciclo di ricerca delle soluzioni
-                    is_sat = False
-
-                else:
-                    # se il counter di soluzioni è a zero vuol dire che non ha avuto il tempo di trovarla
-                    if solution_number == 0:
-                        print("TIME EXCEEDED")
-                        return timeout, False, "N/A unknown", []
-                    
-                    # esco dal ciclo di ricerca delle soluzioni
-                    is_sat = False
-                    is_optimal = False
-
-            except SolverReturnedUnknownResultError:
-                print("Solver encountered an unknown result error. Using the last known solution.")
-                is_optimal = False
-                break
-
-        current_time = t.time()
-        passed_time = current_time - start_time
-
-        # come modello riprendo l'ultimo trovato
-        model = previousModel if previousModel is not None else None
-        
-
-        if model is not None:
-            visited_locations = [[] for _ in range(m)]
-            for i in range(m):
-                for k in X[i]:
-                    sol_assignment = model.get_value(k)
-                    if sol_assignment != Int(n+1):
-                        visited_locations[i].append(sol_assignment)
-            
-            return int(passed_time), is_optimal, model.get_value(obj_function), visited_locations
-        else:
-            return int(passed_time), False, "N/A no_solution", []
-
-
-
-    def binary_optimization(self, instance, solver, timeout, X, carried_load, traveled_distance, obj_function):
+    def BO(self, instance, X, solver, obj_function, shared_obj_function, shared_is_optimal, shared_visited_locations):
 
         m, n, l, s, D = instance.get_values()
-        
-        previousModel = None
-        is_sat = True
-        is_optimal = True
 
         # We set upper and lower bound for the objective function
         lower_bound = set_lower_bound(D)
         upper_bound = set_upper_bound(D, n)
 
-        # Start of the counter
-        start_time = t.time()
         # This is a flag used to indicate the i-th found solution
         solution_number = 0
 
-        # salvo lo stato del solver prima della ricerca
+        previousModel = None
+        is_sat = True
+
         solver.push()
-        
+
+
         while(is_sat):
 
-            try: 
-                # If upper_bound - lower_bound > 1 then we set the middle_bound in the middle of those
-                if (upper_bound - lower_bound > 1):
-                    middle_bound = int(np.ceil((upper_bound + lower_bound) / 2))
-                # If upper_bound - lower_bound == 1 we cannot devide the search space in two: we choose as middle bound the smaller bound
-                elif (upper_bound - lower_bound == 1):
-                    middle_bound = int(lower_bound)
-                    is_sat = False
-                elif (upper_bound - lower_bound == 0):
-                    middle_bound = int(lower_bound)
-                    is_sat = False
-                        
-                if (upper_bound - lower_bound < 0):
-                    is_sat = False
-
-                # print(f"Middle bound is: {middle_bound}")
-
-
-                # We impose the solver to find an objective function smaller than the middle bound  (a better solution)
-                solver.add_assertion(LE(obj_function, Int(middle_bound)))
-
-                # We set the time for next solution
-                current_time = t.time()
-                passed_time = int(current_time - start_time)
-                # self.set_solver((timeout - passed_time)*1000, solver)
-                self.set_solver((timeout - passed_time), solver)
-
-                
-                # prendo lo stato dal solver
-                status = solver.check_sat()
-
-
-                if status is True:
-                    solution_number = solution_number + 1
-                    # print(f"Solution number: {solution_number}, status: {status}")
-                    # print()
-
-
-                    # salvo questo modello come previousModel
-                    previousModel = solver.get_model()
-
-                    # We set the time for next solution
-                    current_time = t.time()
-                    passed_time = int(current_time - start_time)
-                    # self.set_solver((timeout - passed_time)*1000, solver)
-                    self.set_solver((timeout - passed_time), solver)
-
-                    # prendo la objective function dal modello
-                    previous_obj_function = previousModel.get_value(obj_function)
-
-                    # update dell'upper_bound
-                    upper_bound = previous_obj_function.constant_value()
-                    # print(f"il nuovo upper bound è: {upper_bound}")
+            # If upper_bound - lower_bound > 1 then we set the middle_bound in the middle of those
+            if (upper_bound - lower_bound > 1):
+                middle_bound = int(np.ceil((upper_bound + lower_bound) / 2))
+            # If upper_bound - lower_bound == 1 we cannot devide the search space in two: we choose as middle bound the smaller bound
+            elif (upper_bound - lower_bound == 1):
+                middle_bound = int(lower_bound)
+                is_sat = False
+            elif (upper_bound - lower_bound == 0):
+                middle_bound = int(lower_bound)
+                is_sat = False
                     
-                elif status is False:
-                    # print(status)
-                    # print()
-                    solution_number = solution_number + 1
+            if (upper_bound - lower_bound < 0):
+                is_sat = False
+
+            print(f"Middle bound is: {middle_bound}")
 
 
-                    # We delete the last solver (useless solver)
-                    solver.pop()
-                    # We retake the previous one
-                    solver.push()
-                    # We set the lower bound as the middle because we need to search in the second part of the search space
-                    lower_bound = int(middle_bound)
+            # We impose the solver to find an objective function smaller than the middle bound  (a better solution)
+            solver.add_assertion(LE(obj_function, Int(middle_bound)))
 
-                else:
-                    if solution_number == 0:
-                        return timeout, False, "N/A", []
-                    
-                    is_sat = False
-                    is_optimal = False
-            except SolverReturnedUnknownResultError:
-                print("Solver encountered an unknown result error. Using the last known solution.")
-                is_optimal = False
-                break  
 
-        current_time = t.time()
-        passed_time = current_time - start_time
+            # prendo lo stato dal solver
+            status = solver.check_sat()
 
-        # come modello riprendo l'ultimo trovato
-        model = previousModel if previousModel is not None else None
-        
-        if model is not None:
-            visited_locations = [[] for _ in range(m)]
-            for i in range(m):
-                for k in X[i]:
-                    sol_assignment = model.get_value(k)
-                    if sol_assignment != Int(n+1):
-                        visited_locations[i].append(sol_assignment)
+
+            if status is True:
+                solution_number = solution_number + 1
+                print(f"Solution number: {solution_number}, status: {status}")
+                print()
+
+
+                # salvo questo modello come previousModel
+                previousModel = solver.get_model()
+
+                # prendo la objective function dal modello
+                previous_obj_function = previousModel.get_value(obj_function)
+
+                # update dell'upper_bound
+                upper_bound = previous_obj_function.constant_value()
+                print(f"The new upper bound is: {upper_bound}")
+
+                # aggiorno il valore condiviso tra i processi
+                shared_obj_function.value = int(solver.get_value(obj_function).serialize())
+                self.set_visited_locations(instance, X, previousModel, shared_visited_locations)
             
-            return int(passed_time), is_optimal, model.get_value(obj_function), visited_locations
-        else:
-            return int(passed_time), False, "N/A no_solution", []
+            elif status is False:
+                print(status)
+                print()
+
+                # We delete the last solver (useless solver)
+                solver.pop()
+                # We retake the previous one
+                solver.push()
+                # We set the lower bound as the middle because we need to search in the second part of the search space
+                lower_bound = int(middle_bound)
+            
+            else:
+                is_sat = False
+                shared_is_optimal.value = False
+        
+        # se sono qui ho avuto il tempo di trovare la soluzione migliore possibile
+        shared_is_optimal.value = True
+        # come modello riprendo l'ultimo trovato
+        model = previousModel
+        # aggiorno il valore finale della objective function condivisa tra i processi
+        shared_obj_function.value = int(model.get_value(obj_function).serialize())
+
+
+
+    def LO(self, instance, X, solver, obj_function, shared_obj_function, shared_is_optimal, shared_visited_locations):
+
+        previousModel = None
+        is_sat = True
+
+        # This is a flag used to indicate the i-th found solution
+        solution_number = 0
+
+        solver.push()
+
+        while(is_sat):
+            # prendo lo stato dal solver
+            status = solver.check_sat()
+
+            if status is True:
+                # ho trovato una soluzione quindi incremento il counter
+                solution_number = solution_number + 1
+                # print(solution_number)
+
+                # salvo questo modello come previousModel
+                previousModel = solver.get_model()
+
+                # prendo la objective function dal modello
+                previous_obj_function = int(solver.get_value(obj_function).serialize())
+                print(f"Solution number: {solution_number}, Objective function: {previous_obj_function}")
+
+                # impongo al solver di trovare una soluzione migliore
+                solver.add_assertion(LT(obj_function, Int(previous_obj_function)))
+
+                # aggiorno il valore condiviso tra i processi
+                shared_obj_function.value = previous_obj_function
+                self.set_visited_locations(instance, X, previousModel, shared_visited_locations)
+
+
+            elif status is False:
+                # esco dal ciclo di ricerca delle soluzioni
+                is_sat = False
+
+            else:
+                # esco dal ciclo di ricerca delle soluzioni
+                is_sat = False
+                shared_is_optimal.value = False
+
+        # se sono qui ho avuto il tempo di trovare la soluzione migliore possibile
+        shared_is_optimal.value = True
+        # come modello riprendo l'ultimo trovato
+        model = previousModel
+        # aggiorno il valore finale della objective function condivisa tra i processi
+        shared_obj_function.value = int(model.get_value(obj_function).serialize())
