@@ -40,6 +40,13 @@ class SMTsolver:
             shared_visited_locations[i] = courier_path
 
 
+    def set_constraints_wrapper(self, instance, solver, return_dict):
+        X, carried_load, traveled_distance, obj_function = self.set_constraints(instance, solver)
+        return_dict['X'] = X
+        return_dict['carried_load'] = carried_load
+        return_dict['traveled_distance'] = traveled_distance
+        return_dict['obj_function'] = obj_function
+
 
     def solve_multiprocessing(self, instance):
         start_time = t.time()
@@ -47,41 +54,59 @@ class SMTsolver:
         # creo il solver PYSMT
         with Solver(name = self.solver_name, logic = QF_LIA) as solver:
 
-            # creo i valori condivisi per i multiprocessi
-            s_obj_function = multiprocessing.Value('i', 0)  # 'i' indica un intero, inizialmente è a zero
-            s_is_optimal = multiprocessing.Value('b', False) # 'b' indica che è un booleano, lo inizializzo a False
-            s_visited_locations = multiprocessing.Manager().dict() # uso un dizionario condiviso per i percorsi dei corrieri
+            # Crea un dizionario condiviso per restituire i risultati del setting constraints
+            constraints_dict = multiprocessing.Manager().dict()
 
-
-            # setto i contraints del solver
-            X, carried_load, traveled_distance, obj_function = self.set_constraints(instance, solver)
-
-
-            if self.strategy == "linear":
-                # creo il processo usando come ottimizzatore quello lineare
-                process = multiprocessing.Process(target=self.LO, args=(instance, X, solver, obj_function, s_obj_function, s_is_optimal, s_visited_locations))
-            elif self.strategy == "binary":
-                # creo il processo utilizzando come ottimizzatore quello binario
-                process = multiprocessing.Process(target=self.BO, args=(instance, X, solver, obj_function, s_obj_function, s_is_optimal, s_visited_locations))
-
-            
+            # Avvia il processo per set_constraints
+            constraint_process = multiprocessing.Process(target = self.set_constraints_wrapper, args=(instance, solver, constraints_dict))
             # faccio partire il processo con l'ottimizzatore
-            process.start()
-
-
-            # Aspetta che il processo termini o che scada il timeout, dal timeout devo togliere il tempo impiegato per creare il solver 
+            constraint_process.start()
             current_time = t.time()
             passed_time = int((current_time - start_time))
             process_timeout = self.timeout - passed_time
-            process.join(process_timeout)
+            constraint_process.join(process_timeout)
 
-            # se dopo il tempo di timeout il processo è ancora vivo allora lo killo
-            if process.is_alive():
-                print("Timeout! Killing the optimizer...\n")
-                process.terminate()  # Termina il processo se è ancora attivo
-                process.join()  # Aspetta che il processo termini
+            if constraint_process.is_alive():
+                print("Timeout! Failed to encode in time")
+                constraint_process.terminate()
+                constraint_process.join()
             else:
-                print("Process completed. The optimizer found the best solution!\n")
+                    X = constraints_dict['X']
+                    carried_load = constraints_dict['carried_load']
+                    traveled_distance = constraints_dict['traveled_distance']
+                    obj_function = constraints_dict['obj_function']
+
+                    # creo i valori condivisi per i multiprocessi
+                    s_obj_function = multiprocessing.Value('i', 0)  # 'i' indica un intero, inizialmente è a zero
+                    s_is_optimal = multiprocessing.Value('b', False) # 'b' indica che è un booleano, lo inizializzo a False
+                    s_visited_locations = multiprocessing.Manager().dict() # uso un dizionario condiviso per i percorsi dei corrieri
+
+
+                    if self.strategy == "linear":
+                        # creo il processo usando come ottimizzatore quello lineare
+                        process = multiprocessing.Process(target=self.LO, args=(instance, X, solver, obj_function, s_obj_function, s_is_optimal, s_visited_locations))
+                    elif self.strategy == "binary":
+                        # creo il processo utilizzando come ottimizzatore quello binario
+                        process = multiprocessing.Process(target=self.BO, args=(instance, X, solver, obj_function, s_obj_function, s_is_optimal, s_visited_locations))
+
+                    
+                    # faccio partire il processo con l'ottimizzatore
+                    process.start()
+
+
+                    # Aspetta che il processo termini o che scada il timeout, dal timeout devo togliere il tempo impiegato per creare il solver 
+                    current_time = t.time()
+                    passed_time = int((current_time - start_time))
+                    process_timeout = self.timeout - passed_time
+                    process.join(process_timeout)
+
+                    # se dopo il tempo di timeout il processo è ancora vivo allora lo killo
+                    if process.is_alive():
+                        print("Timeout! Killing the optimizer...\n")
+                        process.terminate()  # Termina il processo se è ancora attivo
+                        process.join()  # Aspetta che il processo termini
+                    else:
+                        print("Process completed. The optimizer found the best solution!\n")
 
 
         # Prendo i valori che mi servono: tempo impiegato dall'ottimizzatore, ultima objective function trovata, ottimalità e le visited_locations
@@ -89,9 +114,6 @@ class SMTsolver:
         current_time = t.time()
         passed_time = current_time - start_time
 
-        # controllo i valori ritornati
-        if int(passed_time) >= 300 and s_is_optimal.value == False and s_obj_function.value == 0 and not s_visited_locations:
-            return int(passed_time), s_is_optimal.value, "N/A failed to encode", s_visited_locations
 
         return int(passed_time), s_is_optimal.value, s_obj_function.value, s_visited_locations
 
@@ -160,40 +182,6 @@ class SMTsolver:
                 print("\n")
                 approach = self.solver_name + " " + self.strategy + " " + self.fair_division + " " + self.symmetry_breaking
                 print_output_SMT(approach, passed_time, optimality, s_obj_function, sol, num, self.output_path + "/SMT/")
-        
-        elif self.solver_name != "all" and self.strategy == "all" and self.fair_division == "all" and self.symmetry_breaking == "all":
-            print(f"\n\n \t\t##### SOLVING USING {self.solver_name} AS SOLVER #####")
-            for num, instance in self.input_data.items():
-
-                for strategy in STRATEGIES:
-                    self.strategy = strategy
-                    print(f"\nWe are using {self.strategy} optimization")
-
-                    for f in LOAD_DIVISION:
-
-                        self.fair_division = f
-                        for s in SYMMETRY_BREAKING:
-
-                            self.symmetry_breaking = s
-                            print(f"\n\t## Solution for instance {num} ##")
-
-                            passed_time, s_is_optimal, s_obj_function, s_visited_locations = self.solve_multiprocessing(instance)
-                            sol = from_dict_to_list(s_visited_locations)
-
-                            if s_is_optimal == 1:
-                                optimality = True
-                            else:
-                                optimality = False
-
-
-                            print(f"The solver took {passed_time} seconds to solve the instance")
-                            print(f"The optimal flag is: {optimality}")
-                            print(f"The objective function is: {s_obj_function}")
-                            print(f"The solution is: {sol}")
-                                
-                            print("\n")
-                            approach = self.solver_name + " " + self.strategy + " " + self.fair_division + " " + self.symmetry_breaking
-                            print_output_SMT(approach, passed_time, optimality, s_obj_function, sol, num, self.output_path + "/SMT/")
 
 
 
@@ -285,15 +273,11 @@ class SMTsolver:
                 solver.add_assertion(at_least_k(load_division_assertions, fair_division_coefficient, f"fair_load_{i}"))
 
         
-        #### SYMMETRY BREAKING CONSTRAINT ####
+        # se c'è symmetry breaking allora ordino i carichi in ordine decrescente e impongo ai corrieri di portare più peso del successivo corriere
         if self.symmetry_breaking == "sb":
-            # If the carriable load of two couriers is the same then we impose one of them to carry more load respect to the other
-            for i1 in range(m):
-                for i2 in range(i1 + 1, m):
-                    # the constraint must be applied to two different couriers
-                    if i1 != i2:
-                        solver.add_assertion(Implies(Equals(Int(l[i1]), Int(l[i2])),
-                                                    GT(carried_load[i1], carried_load[i2])))
+            instance.l.sort(reverse=True)
+            for i in range(m-1):
+                solver.add_assertion(GT(carried_load[i], carried_load[i+1]))
 
 
 
