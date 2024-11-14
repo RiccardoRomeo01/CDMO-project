@@ -39,25 +39,26 @@ RUN wget https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VER
 # Set Python 3.11 as the default python
 RUN update-alternatives --install /usr/bin/python python /usr/local/bin/python3.11 1
 
-# Copy and set up Gurobi and MiniZinc requirements
+# Copy requirements early to optimize Docker layer caching
+COPY requirements.txt .
+RUN python -m pip install --no-cache-dir -r requirements.txt
+
+# Install Gurobi Python interface and solver dependencies
 ARG GRB_VERSION=11.0.3
 LABEL vendor="Gurobi"
 LABEL version=${GRB_VERSION}
-
-# Install Gurobi and other Python packages
 RUN python -m pip install --no-cache-dir gurobipy==${GRB_VERSION}
 
-# Copy the license file and Gurobi folder to the container (adjust paths as needed)
-# Make sure the license file and Gurobi files are in the build context
-ADD /MIPMOD/gurobi1103 /opt/gurobi1103
-
-# Copy and install Python dependencies from requirements.txt
-COPY requirements.txt .
-RUN python -m pip install --no-cache-dir -r requirements.txt
+# Install pysmt solvers
 RUN yes Y | pysmt-install --cvc5
 RUN yes Y | pysmt-install --msat
 RUN yes Y | pysmt-install --yices
 
+# Copy Gurobi files (adjust paths as needed for the build context)
+ADD gurobi1103 /opt/gurobi1103
+
+# Optional: Set Gurobi license environment variable if needed
+ENV /MIPMOD/gurobi.lic /opt/gurobi1103/gurobi.lic
 
 # Copy input files and scripts into the container
 COPY /input /input
