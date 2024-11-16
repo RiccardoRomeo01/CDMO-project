@@ -58,7 +58,7 @@ RUN yes Y | pysmt-install --yices
 ADD gurobi1103 /opt/gurobi1103
 
 # Optional: Set Gurobi license environment variable if needed
-ENV /MIPMOD/gurobi.lic /opt/gurobi1103/gurobi.lic
+ENV /MIPMOD/gurobi.lic=/opt/gurobi1103/gurobi.lic
 
 # Copy input files and scripts into the container
 COPY /input /input

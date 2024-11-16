@@ -95,15 +95,17 @@ class MIPSolver:
         solvers_to_use = self.SOLVERS if self.solver_name == "all" else [self.solver_name]
         
         for instance_num in instance_numbers:
-            # Restrict `CBC` and `HIGHS` to instances 0-10 if all instances are selected
-            if self.instance_number == 0 and int(instance_num) > 10 and (self.solver_name == "CBC" or self.solver_name == "HIGHS"):
-                print(f"Skipping solver {self.solver_name} for instance {instance_num} due to instance limit.")
-                continue
 
             instance_data = self.data[instance_num]
             m, n, li, sj, D = instance_data.get_values()
 
             for solver_name in solvers_to_use:
+
+                # Restrict `CBC` and `HIGHS` to instances 0-10 if all instances are selected
+                if int(instance_num) > 10 and (solver_name == "CBC" or solver_name == "HIGHS"):
+                    print(f"Skipping solver {solver_name} for instance {instance_num} due to instance limit.")
+                    continue
+
                 model = pywraplp.Solver.CreateSolver(solver_name)
                 if not model:
                     print(f"Solver {solver_name} is not available, skipping.")
