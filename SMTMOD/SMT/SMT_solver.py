@@ -134,7 +134,8 @@ class SMTsolver:
                                 
                                 print("\n")
                                 approach = solver_name + " " + self.strategy + " " + self.fair_division + " " + self.symmetry_breaking
-                                print_output_SMT(approach, passed_time, optimality, s_obj_function, sol, num, self.output_path + "/SMT/")
+                                if s_obj_function != "N/A failed to encode" and s_obj_function != 0:
+                                    print_output_SMT(approach, passed_time, optimality, s_obj_function, sol, num, self.output_path + "/SMT/")
 
 
         elif self.solver_name != "all" and self.strategy != "all" and self.fair_division != "all" and self.symmetry_breaking != "all":
@@ -158,7 +159,8 @@ class SMTsolver:
                                 
                 print("\n")
                 approach = self.solver_name + " " + self.strategy + " " + self.fair_division + " " + self.symmetry_breaking
-                print_output_SMT(approach, passed_time, optimality, s_obj_function, sol, num, self.output_path + "/SMT/")
+                if s_obj_function != "N/A failed to encode" and s_obj_function != 0:
+                    print_output_SMT(approach, passed_time, optimality, s_obj_function, sol, num, self.output_path + "/SMT/")
         
         elif self.solver_name != "all" and self.strategy == "all" and self.fair_division == "all" and self.symmetry_breaking == "all":
             print(f"\n\n \t\t##### SOLVING USING {self.solver_name} AS SOLVER #####")
@@ -192,7 +194,8 @@ class SMTsolver:
                                 
                             print("\n")
                             approach = self.solver_name + " " + self.strategy + " " + self.fair_division + " " + self.symmetry_breaking
-                            print_output_SMT(approach, passed_time, optimality, s_obj_function, sol, num, self.output_path + "/SMT/")
+                            if s_obj_function != "N/A failed to encode" and s_obj_function != 0:
+                                print_output_SMT(approach, passed_time, optimality, s_obj_function, sol, num, self.output_path + "/SMT/")
 
 
 

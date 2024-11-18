@@ -63,24 +63,21 @@ class SATsolver:
                                             time, optimal, obj, sol = self.search_optimal_linear(num, instance, obj_function, x, current_loads, total_current_load, current_distances, total_current_distance)
                                         elif self.strategy == "binary":
                                             time, optimal, obj, sol = self.search_optimal_binary(num, instance, obj_function, x, current_loads, total_current_load, current_distances, total_current_distance)
-                                            
-                                        # we print the output for that instance
-                                        print_output(approach, time, optimal, obj, sol, num, self.output_path + "/SAT/")
+
+                                        if time <= 300:    
+                                            # we print the output for that instance
+                                            print_output(approach, time, optimal, obj, sol, num, self.output_path + "/SAT/")
                                             
                                     # Here we manage the special case of instance 16
-                                    elif int(num) == 16 and self.strategy == "binary" and self.encoding != "seq" and self.fair_division == "fair":
+                                    elif int(num) == 16 and self.strategy == "binary" and self.encoding != "seq" and self.fair_division == "fair" and self.symmetry_breaking == "no_sb":
                                         
                                         self.set_solver(self.strategy, self.encoding)
                                         
                                         obj_function, x, current_loads, total_current_load, current_distances, total_current_distance = self.set_constraints(instance)
                                         
                                         time, optimal, obj, sol = self.search_optimal_binary(num, instance, obj_function, x, current_loads, total_current_load, current_distances, total_current_distance)
-                                        
-                                        print_output(approach, time, optimal, obj, sol, num, self.output_path + "/SAT/")
-                                        
-                                    else:
-                                        # we print an empty dictionary
-                                        print_output(approach, self.timeout, False, "N/A unknown", "N/A unknown", num, self.output_path + "/SAT/")
+                                        if time <= 300:
+                                            print_output(approach, time, optimal, obj, sol, num, self.output_path + "/SAT/")
                     print()
                     
             print()
@@ -108,12 +105,13 @@ class SATsolver:
                         time, optimal, obj, sol = self.search_optimal_linear(num, instance, obj_function, x, current_loads, total_current_load, current_distances, total_current_distance)
                     elif self.strategy == "binary":
                         time, optimal, obj, sol = self.search_optimal_binary(num, instance, obj_function, x, current_loads, total_current_load, current_distances, total_current_distance)
-                        
-                    # printing the output for that instance
-                    print_output(approach, time, optimal, obj, sol, num, self.output_path + "/SAT/")
+                    
+                    if time <= 300:
+                        # printing the output for that instance
+                        print_output(approach, time, optimal, obj, sol, num, self.output_path + "/SAT/")
                 
                 # Here we manage the special case of instance 16
-                elif int(num) == 16 and self.strategy == "binary" and self.encoding != "seq" and self.fair_division == "fair":
+                elif int(num) == 16 and self.strategy == "binary" and self.encoding != "seq" and self.fair_division == "fair" and self.symmetry_breaking == "no_sb":
                     
                     self.set_solver(self.strategy, self.encoding)
                     
@@ -121,9 +119,8 @@ class SATsolver:
                     
                     time, optimal, obj, sol = self.search_optimal_binary(num, instance, obj_function, x, current_loads, total_current_load, current_distances, total_current_distance)
                     
-                    print_output(approach, time, optimal, obj, sol, num, self.output_path + "/SAT/")
-                else:
-                    print_output(approach, self.timeout, False, "N/A unknown", "N/A unknown", num, self.output_path + "/SAT/")
+                    if time <= 300:
+                        print_output(approach, time, optimal, obj, sol, num, self.output_path + "/SAT/")
                 print()
             print()
     

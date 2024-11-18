@@ -416,10 +416,44 @@
         ]
     },
     "cvc5 linear fair sb": {
-        "time": 300,
-        "optimal": false,
-        "obj": 0,
-        "sol": []
+        "time": 8,
+        "optimal": true,
+        "obj": 244,
+        "sol": [
+            [
+                5
+            ],
+            [
+                9
+            ],
+            [
+                1,
+                10
+            ],
+            [
+                11,
+                13
+            ],
+            [
+                7,
+                6
+            ],
+            [
+                8
+            ],
+            [
+                4
+            ],
+            [
+                3
+            ],
+            [
+                12
+            ],
+            [
+                2
+            ]
+        ]
     },
     "cvc5 binary no_fair no_sb": {
         "time": 287,
@@ -456,12 +490,6 @@
                 12
             ]
         ]
-    },
-    "cvc5 binary no_fair sb": {
-        "time": 300,
-        "optimal": false,
-        "obj": 0,
-        "sol": []
     },
     "cvc5 binary fair no_sb": {
         "time": 2,
@@ -503,12 +531,6 @@
             ]
         ]
     },
-    "cvc5 binary fair sb": {
-        "time": 300,
-        "optimal": false,
-        "obj": 0,
-        "sol": []
-    },
     "yices linear no_fair no_sb": {
         "time": 300,
         "optimal": false,
@@ -545,12 +567,6 @@
             ],
             []
         ]
-    },
-    "yices linear no_fair sb": {
-        "time": 300,
-        "optimal": false,
-        "obj": "N/A failed to encode",
-        "sol": []
     },
     "yices linear fair no_sb": {
         "time": 0,
@@ -663,12 +679,6 @@
                 11
             ]
         ]
-    },
-    "yices binary no_fair sb": {
-        "time": 300,
-        "optimal": false,
-        "obj": "N/A failed to encode",
-        "sol": []
     },
     "yices binary fair no_sb": {
         "time": 0,
@@ -990,6 +1000,118 @@
             [
                 4
             ]
+        ]
+    },
+    "cvc5 binary fair sb": {
+        "time": 2,
+        "optimal": true,
+        "obj": 244,
+        "sol": [
+            [
+                5
+            ],
+            [
+                9
+            ],
+            [
+                1,
+                10
+            ],
+            [
+                11,
+                13
+            ],
+            [
+                7,
+                6
+            ],
+            [
+                8
+            ],
+            [
+                4
+            ],
+            [
+                3
+            ],
+            [
+                12
+            ],
+            [
+                2
+            ]
+        ]
+    },
+    "yices linear no_fair sb": {
+        "time": 301,
+        "optimal": false,
+        "obj": 366,
+        "sol": [
+            [],
+            [
+                12,
+                3
+            ],
+            [
+                9,
+                11,
+                1,
+                4,
+                7,
+                2
+            ],
+            [
+                10,
+                6,
+                5
+            ],
+            [
+                13
+            ],
+            [
+                8
+            ],
+            [],
+            [],
+            [],
+            []
+        ]
+    },
+    "yices binary no_fair sb": {
+        "time": 301,
+        "optimal": false,
+        "obj": 248,
+        "sol": [
+            [],
+            [
+                9
+            ],
+            [
+                11,
+                7,
+                1
+            ],
+            [
+                5,
+                3,
+                2,
+                4
+            ],
+            [
+                10,
+                13
+            ],
+            [
+                6
+            ],
+            [
+                8
+            ],
+            [],
+            [
+                12
+            ],
+            []
         ]
     }
 }
