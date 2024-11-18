@@ -88,6 +88,55 @@ def main():
             model=args.solver,
             symmetry_breaking = args.symmetry_breaking
         )
+    elif args.approach == 'all':
+        solver = CPsolver(
+            data=load_data_cp(args.input_dir, args.num_instance), 
+            output_dir=args.output_dir, 
+            timeout=int(args.timeout), 
+            model=args.model
+        ) 
+
+        print("Solving with CP ...")
+        solver.solve()
+        
+
+        solver = SMTsolver(
+            input_data = load_data_sat_mip(args.input_dir, args.num_instance),
+            timeout = int(args.timeout),
+            output_path = args.output_dir,
+            solver_name= "all",
+            strategy = "all",
+            symmetry_breaking = "all",
+            fair_division = "all"
+        )
+
+        print("Solving with SMT ...")
+        solver.solve()
+
+        solver = SATsolver(
+            input_data = load_data_sat_mip(args.input_dir, args.num_instance),
+            timeout = int(args.timeout),
+            encoding = "all",
+            output_path = args.output_dir,
+            strategy= "all",
+            symmetry_breaking = "all",
+            fair_division = "all"
+        ) 
+
+        print("Solving with SAT ...")
+        solver.solve()
+
+        solver = MIPSolver(
+            instance_number=0,
+            data=load_data_sat_mip(args.input_dir, args.num_instance), 
+            output_dir=args.output_dir, 
+            timeout=int(args.timeout), 
+            model="all",
+            symmetry_breaking = "all"
+        )
+
+        print("Solving with MIP ...")
+        solver.solve()
     else:
         raise argparse.ArgumentError(None, "Please select a solver between cp, sat, smt or mip")
     
@@ -114,13 +163,13 @@ def main():
             raise TimeoutError("Timeout in seconds must be a positive integer")
         if args.solver != "CBC" and args.solver != "SCIP" and args.solver != "GUROBI" and args.solver != "HIGHS" and args.solver != "all":
             raise argparse.ArgumentError(None, "The solver argument must be: CBC, SCIP, GUROBI or HIGHS or all")
-        if args.symmetry_breaking != "sb" and args.symmetry_breaking != "no_sb":
+        if args.symmetry_breaking != "sb" and args.symmetry_breaking != "no_sb" and args.symmetry_breaking != "all":
             raise argparse.ArgumentError(None, "The symmetry_breaking argument must be: sb, no_sb")
 
 
-    
-    print("Solving with", args.approach)
-    solver.solve()
+    if args.approach != 'all':
+        print("Solving with", args.approach)
+        solver.solve()
 
 if __name__ == '__main__':
     main()
