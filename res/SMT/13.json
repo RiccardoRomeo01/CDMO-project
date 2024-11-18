@@ -118,11 +118,5 @@
                 28
             ]
         ]
-    },
-    "msat binary fair no_sb": {
-        "time": 300,
-        "optimal": false,
-        "obj": "N/A failed to encode",
-        "sol": []
     }
 }

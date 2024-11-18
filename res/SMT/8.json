@@ -287,12 +287,6 @@
             ]
         ]
     },
-    "cvc5 linear no_fair sb": {
-        "time": 300,
-        "optimal": false,
-        "obj": 0,
-        "sol": []
-    },
     "cvc5 linear fair no_sb": {
         "time": 2,
         "optimal": true,
@@ -998,6 +992,38 @@
             ],
             [
                 2
+            ]
+        ]
+    },
+    "cvc5 linear no_fair sb": {
+        "time": 300,
+        "optimal": false,
+        "obj": 186,
+        "sol": [
+            [
+                9
+            ],
+            [
+                10
+            ],
+            [
+                2,
+                4,
+                7
+            ],
+            [
+                8
+            ],
+            [
+                5,
+                6
+            ],
+            [
+                3
+            ],
+            [],
+            [
+                1
             ]
         ]
     }

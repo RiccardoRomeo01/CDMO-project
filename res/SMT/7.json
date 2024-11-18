@@ -459,8 +459,38 @@
     "cvc5 binary no_fair sb": {
         "time": 300,
         "optimal": false,
-        "obj": 0,
-        "sol": []
+        "obj": 366,
+        "sol": [
+            [
+                7
+            ],
+            [
+                14,
+                13,
+                4,
+                1,
+                16
+            ],
+            [
+                3,
+                2,
+                17
+            ],
+            [
+                8
+            ],
+            [
+                9,
+                12,
+                6,
+                15,
+                5
+            ],
+            [
+                11,
+                10
+            ]
+        ]
     },
     "cvc5 binary fair no_sb": {
         "time": 8,
@@ -989,12 +1019,6 @@
                 6
             ]
         ]
-    },
-    "msat binary no_fair sb": {
-        "time": 300,
-        "optimal": false,
-        "obj": "N/A failed to encode",
-        "sol": []
     },
     "msat binary fair no_sb": {
         "time": 14,

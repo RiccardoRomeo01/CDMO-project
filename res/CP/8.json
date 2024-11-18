@@ -33,7 +33,11 @@
         ]
     },
     "gecode": {
+<<<<<<< HEAD
         "time": 42,
+=======
+        "time": 24,
+>>>>>>> 8e5673e97bd7e0d58e6429c015262c3a7d5367a0
         "optimal": true,
         "obj": 186,
         "sol": [
@@ -99,8 +103,13 @@
         ]
     },
     "chuffed": {
+<<<<<<< HEAD
         "time": 300,
         "optimal": false,
+=======
+        "time": 223,
+        "optimal": true,
+>>>>>>> 8e5673e97bd7e0d58e6429c015262c3a7d5367a0
         "obj": 186,
         "sol": [
             [

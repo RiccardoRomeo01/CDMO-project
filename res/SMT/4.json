@@ -415,10 +415,35 @@
         ]
     },
     "cvc5 binary no_fair sb": {
-        "time": 300,
-        "optimal": false,
-        "obj": 0,
-        "sol": []
+        "time": 6,
+        "optimal": true,
+        "obj": 220,
+        "sol": [
+            [
+                9,
+                7,
+                5
+            ],
+            [
+                6
+            ],
+            [
+                4
+            ],
+            [
+                8
+            ],
+            [],
+            [
+                3,
+                10
+            ],
+            [],
+            [
+                1,
+                2
+            ]
+        ]
     },
     "cvc5 binary fair no_sb": {
         "time": 0,
