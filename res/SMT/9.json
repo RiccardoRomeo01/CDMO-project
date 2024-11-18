@@ -935,12 +935,6 @@
             []
         ]
     },
-    "msat linear no_fair sb": {
-        "time": 300,
-        "optimal": false,
-        "obj": "N/A failed to encode",
-        "sol": []
-    },
     "msat linear fair no_sb": {
         "time": 1,
         "optimal": true,
@@ -1054,12 +1048,6 @@
                 1
             ]
         ]
-    },
-    "msat binary no_fair sb": {
-        "time": 300,
-        "optimal": false,
-        "obj": "N/A failed to encode",
-        "sol": []
     },
     "msat binary fair no_sb": {
         "time": 1,
