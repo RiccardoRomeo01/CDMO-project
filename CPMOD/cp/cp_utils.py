@@ -6,18 +6,7 @@ def print_model(evaluated_results, corresponding_dict):
      distances,
      seconds) = evaluated_results
     
-    '''
-    for k in range(len(asg)):
-        print("Courier = ", corresponding_dict[k])
-        for i in range(len(asg[k])-1):
-            if asg[k][i] != i + 1:
-                print("Starting Node: {} Ending Node: {} ({} km)".format(
-                                                                i + 1, 
-                                                                asg[corresponding_dict[k]][i],
-                                                                distances[i][asg[corresponding_dict[k]][i] - 1]
-                                                                )
-                )
-                '''
+    
     print("Total distances = ", obj_dist)
     print("TIME =", seconds)
     print("---------------------------------------------")

@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "dgSpecHash": "FC5J4EcKcck7RlPmwJbCwCv3XHfscvlSlRvTRPnaTw0tDu+s1/VkKE1i03wdRtn3fHFgds3zpuk/36uVAcTutg==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\morne\\Desktop\\project Combinatorial deccision making\\TotalProject\\CDMO-project\\gurobi1103\\linux64\\examples\\build\\dotnet\\gurobi-nuget.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\morne\\.nuget\\packages\\gurobi.optimizer\\11.0.3\\gurobi.optimizer.11.0.3.nupkg.sha512",
+    "C:\\Users\\morne\\.nuget\\packages\\microsoft.netframework.referenceassemblies\\1.0.3\\microsoft.netframework.referenceassemblies.1.0.3.nupkg.sha512",
+    "C:\\Users\\morne\\.nuget\\packages\\microsoft.netframework.referenceassemblies.net462\\1.0.3\\microsoft.netframework.referenceassemblies.net462.1.0.3.nupkg.sha512",
+    "C:\\Users\\morne\\.nuget\\packages\\microsoft.netcore.app.ref\\6.0.25\\microsoft.netcore.app.ref.6.0.25.nupkg.sha512",
+    "C:\\Users\\morne\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\6.0.25\\microsoft.windowsdesktop.app.ref.6.0.25.nupkg.sha512",
+    "C:\\Users\\morne\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\6.0.25\\microsoft.aspnetcore.app.ref.6.0.25.nupkg.sha512",
+    "C:\\Users\\morne\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\6.0.25\\microsoft.netcore.app.host.win-x64.6.0.25.nupkg.sha512"
+  ],
+  "logs": []
+}

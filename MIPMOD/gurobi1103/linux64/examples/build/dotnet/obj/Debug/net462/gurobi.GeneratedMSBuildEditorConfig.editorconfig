@@ -1,0 +1,5 @@
+is_global = true
+build_property.RootNamespace = gurobi
+build_property.ProjectDir = C:\Users\morne\Desktop\project Combinatorial deccision making\TotalProject\CDMO-project\MIPMOD\gurobi1103\linux64\examples\build\dotnet\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 

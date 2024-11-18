@@ -22,9 +22,9 @@ class CPsolver:
 
     def get_model_circuit(self):
         if self.symmetry == SYMMETRY_BREAKING:
-            self.solver_path = "./CPMOD/cp/models/prova2_sym2.mzn"#"C:/Users/morne/esktop/project Combinatorial deccision making/other_project/MCPP-main/MCPP-main/cp/src/models/model.mzn"#
+            self.solver_path = "./CPMOD/cp/models/model_sym.mzn"#"C:/Users/morne/esktop/project Combinatorial deccision making/other_project/MCPP-main/MCPP-main/cp/src/models/model.mzn"#
         elif self.symmetry == NO_SYMMETRY_BREAKING:
-            self.solver_path = "./CPMOD/cp/models/prova2.mzn"
+            self.solver_path = "./CPMOD/cp/models/model.mzn"
         model = Model(self.solver_path)
         return model
 
