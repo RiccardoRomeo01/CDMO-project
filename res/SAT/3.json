@@ -1,65 +1,5 @@
 {
-    "z3 linear no_fair no_sb": {
-        "time": 1,
-        "optimal": true,
-        "obj": 12,
-        "sol": [
-            [
-                5,
-                6,
-                3
-            ],
-            [
-                2,
-                4
-            ],
-            [
-                1,
-                7
-            ]
-        ]
-    },
-    "z3 linear no_fair sb": {
-        "time": 1,
-        "optimal": true,
-        "obj": 12,
-        "sol": [
-            [
-                5,
-                6,
-                3
-            ],
-            [
-                2,
-                4
-            ],
-            [
-                1,
-                7
-            ]
-        ]
-    },
-    "z3 linear fair no_sb": {
-        "time": 0,
-        "optimal": true,
-        "obj": 12,
-        "sol": [
-            [
-                3,
-                6,
-                5
-            ],
-            [
-                2,
-                4
-            ],
-            [
-                1,
-                7
-            ]
-        ]
-    },
-    "z3 linear fair sb": {
+    "linear np sb fair": {
         "time": 0,
         "optimal": true,
         "obj": 12,
@@ -70,8 +10,8 @@
                 2
             ],
             [
-                6,
-                3
+                3,
+                6
             ],
             [
                 7,
@@ -79,8 +19,28 @@
             ]
         ]
     },
-    "z3 binary no_fair no_sb": {
-        "time": 2,
+    "linear np sb no_fair": {
+        "time": 1,
+        "optimal": true,
+        "obj": 12,
+        "sol": [
+            [
+                5,
+                4,
+                2
+            ],
+            [
+                3,
+                7
+            ],
+            [
+                6,
+                1
+            ]
+        ]
+    },
+    "linear np no_sb fair": {
+        "time": 0,
         "optimal": true,
         "obj": 12,
         "sol": [
@@ -99,8 +59,68 @@
             ]
         ]
     },
-    "z3 binary no_fair sb": {
+    "linear np no_sb no_fair": {
+        "time": 0,
+        "optimal": true,
+        "obj": 12,
+        "sol": [
+            [
+                5,
+                4,
+                2
+            ],
+            [
+                3,
+                6
+            ],
+            [
+                7,
+                1
+            ]
+        ]
+    },
+    "linear seq sb fair": {
         "time": 2,
+        "optimal": true,
+        "obj": 12,
+        "sol": [
+            [
+                5,
+                4,
+                2
+            ],
+            [
+                3,
+                7
+            ],
+            [
+                1,
+                6
+            ]
+        ]
+    },
+    "linear seq sb no_fair": {
+        "time": 0,
+        "optimal": true,
+        "obj": 12,
+        "sol": [
+            [
+                5,
+                4,
+                2
+            ],
+            [
+                7,
+                3
+            ],
+            [
+                6,
+                1
+            ]
+        ]
+    },
+    "linear seq no_sb fair": {
+        "time": 1,
         "optimal": true,
         "obj": 12,
         "sol": [
@@ -114,53 +134,13 @@
                 4
             ],
             [
-                7,
-                1
+                1,
+                7
             ]
         ]
     },
-    "z3 binary fair no_sb": {
+    "linear seq no_sb no_fair": {
         "time": 0,
-        "optimal": true,
-        "obj": 12,
-        "sol": [
-            [
-                3,
-                6,
-                5
-            ],
-            [
-                4,
-                2
-            ],
-            [
-                7,
-                1
-            ]
-        ]
-    },
-    "z3 binary fair sb": {
-        "time": 1,
-        "optimal": true,
-        "obj": 12,
-        "sol": [
-            [
-                3,
-                6,
-                5
-            ],
-            [
-                4,
-                2
-            ],
-            [
-                7,
-                1
-            ]
-        ]
-    },
-    "cvc5 linear no_fair no_sb": {
-        "time": 2,
         "optimal": true,
         "obj": 12,
         "sol": [
@@ -179,7 +159,147 @@
             ]
         ]
     },
-    "cvc5 linear no_fair sb": {
+    "linear bw sb fair": {
+        "time": 0,
+        "optimal": true,
+        "obj": 12,
+        "sol": [
+            [
+                5,
+                4,
+                2
+            ],
+            [
+                3,
+                7
+            ],
+            [
+                6,
+                1
+            ]
+        ]
+    },
+    "linear bw sb no_fair": {
+        "time": 2,
+        "optimal": true,
+        "obj": 12,
+        "sol": [
+            [
+                3,
+                6,
+                5
+            ],
+            [
+                4,
+                2
+            ],
+            [
+                1,
+                7
+            ]
+        ]
+    },
+    "linear bw no_sb fair": {
+        "time": 0,
+        "optimal": true,
+        "obj": 12,
+        "sol": [
+            [
+                5,
+                6,
+                3
+            ],
+            [
+                4,
+                2
+            ],
+            [
+                1,
+                7
+            ]
+        ]
+    },
+    "linear bw no_sb no_fair": {
+        "time": 1,
+        "optimal": true,
+        "obj": 12,
+        "sol": [
+            [
+                5,
+                6,
+                3
+            ],
+            [
+                2,
+                4
+            ],
+            [
+                7,
+                1
+            ]
+        ]
+    },
+    "linear he sb fair": {
+        "time": 0,
+        "optimal": true,
+        "obj": 12,
+        "sol": [
+            [
+                3,
+                6,
+                5
+            ],
+            [
+                2,
+                4
+            ],
+            [
+                7,
+                1
+            ]
+        ]
+    },
+    "linear he sb no_fair": {
+        "time": 1,
+        "optimal": true,
+        "obj": 12,
+        "sol": [
+            [
+                3,
+                6,
+                5
+            ],
+            [
+                2,
+                4
+            ],
+            [
+                7,
+                1
+            ]
+        ]
+    },
+    "linear he no_sb fair": {
+        "time": 1,
+        "optimal": true,
+        "obj": 12,
+        "sol": [
+            [
+                5,
+                4,
+                2
+            ],
+            [
+                6,
+                3
+            ],
+            [
+                1,
+                7
+            ]
+        ]
+    },
+    "linear he no_sb no_fair": {
         "time": 3,
         "optimal": true,
         "obj": 12,
@@ -190,16 +310,36 @@
                 2
             ],
             [
-                3,
-                6
+                7,
+                3
             ],
             [
-                7,
-                1
+                1,
+                6
             ]
         ]
     },
-    "cvc5 linear fair no_sb": {
+    "linear pb sb fair": {
+        "time": 1,
+        "optimal": true,
+        "obj": 12,
+        "sol": [
+            [
+                3,
+                6,
+                5
+            ],
+            [
+                2,
+                4
+            ],
+            [
+                1,
+                7
+            ]
+        ]
+    },
+    "linear pb sb no_fair": {
         "time": 0,
         "optimal": true,
         "obj": 12,
@@ -210,37 +350,17 @@
                 2
             ],
             [
-                3,
-                6
+                7,
+                3
             ],
             [
-                7,
+                6,
                 1
             ]
         ]
     },
-    "cvc5 linear fair sb": {
+    "linear pb no_sb fair": {
         "time": 0,
-        "optimal": true,
-        "obj": 12,
-        "sol": [
-            [
-                5,
-                4,
-                2
-            ],
-            [
-                3,
-                6
-            ],
-            [
-                7,
-                1
-            ]
-        ]
-    },
-    "cvc5 binary no_fair no_sb": {
-        "time": 4,
         "optimal": true,
         "obj": 12,
         "sol": [
@@ -259,128 +379,128 @@
             ]
         ]
     },
-    "cvc5 binary no_fair sb": {
+    "linear pb no_sb no_fair": {
+        "time": 0,
+        "optimal": true,
+        "obj": 12,
+        "sol": [
+            [
+                5,
+                4,
+                2
+            ],
+            [
+                7,
+                3
+            ],
+            [
+                1,
+                6
+            ]
+        ]
+    },
+    "binary np sb fair": {
+        "time": 2,
+        "optimal": true,
+        "obj": 12,
+        "sol": [
+            [
+                5,
+                4,
+                2
+            ],
+            [
+                6,
+                3
+            ],
+            [
+                7,
+                1
+            ]
+        ]
+    },
+    "binary np sb no_fair": {
+        "time": 7,
+        "optimal": true,
+        "obj": 12,
+        "sol": [
+            [
+                5,
+                6,
+                3
+            ],
+            [
+                4,
+                2
+            ],
+            [
+                1,
+                7
+            ]
+        ]
+    },
+    "binary np no_sb fair": {
+        "time": 2,
+        "optimal": true,
+        "obj": 12,
+        "sol": [
+            [
+                5,
+                6,
+                3
+            ],
+            [
+                4,
+                2
+            ],
+            [
+                7,
+                1
+            ]
+        ]
+    },
+    "binary np no_sb no_fair": {
+        "time": 7,
+        "optimal": true,
+        "obj": 12,
+        "sol": [
+            [
+                5,
+                4,
+                2
+            ],
+            [
+                7,
+                3
+            ],
+            [
+                6,
+                1
+            ]
+        ]
+    },
+    "binary seq sb fair": {
         "time": 5,
         "optimal": true,
         "obj": 12,
         "sol": [
             [
-                3,
-                6,
-                5
-            ],
-            [
-                4,
-                2
-            ],
-            [
-                7,
-                1
-            ]
-        ]
-    },
-    "cvc5 binary fair no_sb": {
-        "time": 0,
-        "optimal": true,
-        "obj": 12,
-        "sol": [
-            [
                 5,
-                4,
-                2
-            ],
-            [
-                7,
+                6,
                 3
-            ],
-            [
-                6,
-                1
-            ]
-        ]
-    },
-    "cvc5 binary fair sb": {
-        "time": 0,
-        "optimal": true,
-        "obj": 12,
-        "sol": [
-            [
-                5,
-                4,
-                2
-            ],
-            [
-                7,
-                3
-            ],
-            [
-                6,
-                1
-            ]
-        ]
-    },
-    "yices linear no_fair no_sb": {
-        "time": 0,
-        "optimal": true,
-        "obj": 12,
-        "sol": [
-            [
-                3,
-                6,
-                5
             ],
             [
                 2,
                 4
             ],
             [
-                7,
-                1
-            ]
-        ]
-    },
-    "yices linear no_fair sb": {
-        "time": 0,
-        "optimal": true,
-        "obj": 12,
-        "sol": [
-            [
-                5,
-                4,
-                2
-            ],
-            [
-                6,
-                3
-            ],
-            [
                 1,
                 7
             ]
         ]
     },
-    "yices linear fair no_sb": {
-        "time": 0,
-        "optimal": true,
-        "obj": 12,
-        "sol": [
-            [
-                3,
-                6,
-                5
-            ],
-            [
-                4,
-                2
-            ],
-            [
-                1,
-                7
-            ]
-        ]
-    },
-    "yices linear fair sb": {
-        "time": 0,
+    "binary seq sb no_fair": {
+        "time": 2,
         "optimal": true,
         "obj": 12,
         "sol": [
@@ -399,48 +519,8 @@
             ]
         ]
     },
-    "yices binary no_fair no_sb": {
-        "time": 0,
-        "optimal": true,
-        "obj": 12,
-        "sol": [
-            [
-                3,
-                6,
-                5
-            ],
-            [
-                4,
-                2
-            ],
-            [
-                1,
-                7
-            ]
-        ]
-    },
-    "yices binary no_fair sb": {
-        "time": 0,
-        "optimal": true,
-        "obj": 12,
-        "sol": [
-            [
-                5,
-                6,
-                3
-            ],
-            [
-                2,
-                4
-            ],
-            [
-                7,
-                1
-            ]
-        ]
-    },
-    "yices binary fair no_sb": {
-        "time": 0,
+    "binary seq no_sb fair": {
+        "time": 9,
         "optimal": true,
         "obj": 12,
         "sol": [
@@ -459,8 +539,48 @@
             ]
         ]
     },
-    "yices binary fair sb": {
-        "time": 0,
+    "binary seq no_sb no_fair": {
+        "time": 4,
+        "optimal": true,
+        "obj": 12,
+        "sol": [
+            [
+                3,
+                6,
+                5
+            ],
+            [
+                2,
+                4
+            ],
+            [
+                1,
+                7
+            ]
+        ]
+    },
+    "binary bw sb fair": {
+        "time": 1,
+        "optimal": true,
+        "obj": 12,
+        "sol": [
+            [
+                5,
+                4,
+                2
+            ],
+            [
+                3,
+                7
+            ],
+            [
+                6,
+                1
+            ]
+        ]
+    },
+    "binary bw sb no_fair": {
+        "time": 5,
         "optimal": true,
         "obj": 12,
         "sol": [
@@ -474,13 +594,33 @@
                 4
             ],
             [
+                1,
+                7
+            ]
+        ]
+    },
+    "binary bw no_sb fair": {
+        "time": 1,
+        "optimal": true,
+        "obj": 12,
+        "sol": [
+            [
+                5,
+                4,
+                2
+            ],
+            [
                 7,
+                3
+            ],
+            [
+                6,
                 1
             ]
         ]
     },
-    "msat linear no_fair no_sb": {
-        "time": 29,
+    "binary bw no_sb no_fair": {
+        "time": 3,
         "optimal": true,
         "obj": 12,
         "sol": [
@@ -499,8 +639,68 @@
             ]
         ]
     },
-    "msat linear no_fair sb": {
-        "time": 29,
+    "binary he sb fair": {
+        "time": 1,
+        "optimal": true,
+        "obj": 12,
+        "sol": [
+            [
+                3,
+                6,
+                5
+            ],
+            [
+                4,
+                2
+            ],
+            [
+                1,
+                7
+            ]
+        ]
+    },
+    "binary he sb no_fair": {
+        "time": 3,
+        "optimal": true,
+        "obj": 12,
+        "sol": [
+            [
+                5,
+                4,
+                2
+            ],
+            [
+                7,
+                3
+            ],
+            [
+                1,
+                6
+            ]
+        ]
+    },
+    "binary he no_sb fair": {
+        "time": 2,
+        "optimal": true,
+        "obj": 12,
+        "sol": [
+            [
+                5,
+                4,
+                2
+            ],
+            [
+                3,
+                7
+            ],
+            [
+                1,
+                6
+            ]
+        ]
+    },
+    "binary he no_sb no_fair": {
+        "time": 2,
         "optimal": true,
         "obj": 12,
         "sol": [
@@ -519,7 +719,7 @@
             ]
         ]
     },
-    "msat linear fair no_sb": {
+    "binary pb sb fair": {
         "time": 0,
         "optimal": true,
         "obj": 12,
@@ -539,7 +739,47 @@
             ]
         ]
     },
-    "msat linear fair sb": {
+    "binary pb sb no_fair": {
+        "time": 0,
+        "optimal": true,
+        "obj": 12,
+        "sol": [
+            [
+                5,
+                6,
+                3
+            ],
+            [
+                2,
+                4
+            ],
+            [
+                1,
+                7
+            ]
+        ]
+    },
+    "binary pb no_sb fair": {
+        "time": 1,
+        "optimal": true,
+        "obj": 12,
+        "sol": [
+            [
+                5,
+                6,
+                3
+            ],
+            [
+                2,
+                4
+            ],
+            [
+                1,
+                7
+            ]
+        ]
+    },
+    "binary pb no_sb no_fair": {
         "time": 0,
         "optimal": true,
         "obj": 12,
@@ -554,88 +794,8 @@
                 4
             ],
             [
-                1,
-                7
-            ]
-        ]
-    },
-    "msat binary no_fair no_sb": {
-        "time": 57,
-        "optimal": true,
-        "obj": 12,
-        "sol": [
-            [
-                5,
-                4,
-                2
-            ],
-            [
-                3,
-                7
-            ],
-            [
-                6,
+                7,
                 1
-            ]
-        ]
-    },
-    "msat binary no_fair sb": {
-        "time": 56,
-        "optimal": true,
-        "obj": 12,
-        "sol": [
-            [
-                5,
-                4,
-                2
-            ],
-            [
-                3,
-                7
-            ],
-            [
-                6,
-                1
-            ]
-        ]
-    },
-    "msat binary fair no_sb": {
-        "time": 0,
-        "optimal": true,
-        "obj": 12,
-        "sol": [
-            [
-                5,
-                6,
-                3
-            ],
-            [
-                4,
-                2
-            ],
-            [
-                1,
-                7
-            ]
-        ]
-    },
-    "msat binary fair sb": {
-        "time": 0,
-        "optimal": true,
-        "obj": 12,
-        "sol": [
-            [
-                5,
-                6,
-                3
-            ],
-            [
-                4,
-                2
-            ],
-            [
-                1,
-                7
             ]
         ]
     }
