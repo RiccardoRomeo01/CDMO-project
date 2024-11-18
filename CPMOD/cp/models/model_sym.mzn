@@ -88,8 +88,8 @@ constraint forall(k1 in 1..m-1 )(
 */
 
 solve :: seq_search([
-                int_search(pos, first_fail, indomain_random),
-                int_search(assigned, first_fail, indomain_random),
+                int_search(pos, first_fail, indomain_min),
+                int_search(assigned, first_fail, indomain_min),
                 
                 ])
      minimize(makespan);
