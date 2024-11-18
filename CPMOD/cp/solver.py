@@ -13,9 +13,7 @@ class CPsolver:
         self.model = model
         if self.model == CIRCUIT_MODEL_CP:
             self.data = data
-        elif self.model == GRAPH_MODEL_CP:
-            self.data = loop_preprocessing_graph(data)
-
+       
     def solve(self):
         if self.model == CIRCUIT_MODEL_CP:
             self.circuit_model_solve()
@@ -132,7 +130,7 @@ class CPsolver:
         instance["D"] = distances
         instance["up_bound"] = upper_bound
         instance["low_bound"] = low_bound
-        instance["d_low_bound"] = d_low_bound
+        instance["d_low_bound"] = 0
 
         '''
         instance["courier"] = couriers

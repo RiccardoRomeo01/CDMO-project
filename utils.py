@@ -89,9 +89,10 @@ def load_data_cp(path, instance):
     else:
         i = 0
         for file in files:
-            if i == instance:
+            if i == instance-1:
+                data[file] = (read_instance_cp(path + "/" + file))
                 break
-            data[file] = (read_instance_cp(path + "/" + file))
+            
             i += 1
     return data
 
