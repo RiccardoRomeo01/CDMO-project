@@ -1,5 +1,4 @@
 SMT_SOLVERS = ['z3', 'cvc5', 'yices', 'msat']
-# SMT_SOLVERS = ['msat']
 
 STRATEGIES = ["linear", "binary"]
 

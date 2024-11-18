@@ -26,7 +26,6 @@ class SMTsolver:
     def set_visited_locations(self, instance, X, model, shared_visited_locations):
         m, n, l, s, D = instance.get_values()
 
-        # creo il percorso del corriere i-esimo
         # print("la funzione è stata chiamata")
         for i in range(m):
             courier_path = []
@@ -43,52 +42,52 @@ class SMTsolver:
     def solve_multiprocessing(self, instance):
         start_time = t.time()
 
-        # creo il solver PYSMT
+        # we create the PySMT solver
         with Solver(name = self.solver_name, logic = QF_LIA) as solver:
 
-            # creo i valori condivisi per i multiprocessi
-            s_obj_function = multiprocessing.Value('i', 0)  # 'i' indica un intero, inizialmente è a zero
-            s_is_optimal = multiprocessing.Value('b', False) # 'b' indica che è un booleano, lo inizializzo a False
-            s_visited_locations = multiprocessing.Manager().dict() # uso un dizionario condiviso per i percorsi dei corrieri
+            # I create shared values ​​for multiprocesses
+            s_obj_function = multiprocessing.Value('i', 0)  # 'i' indicates an integer, initially it is zero
+            s_is_optimal = multiprocessing.Value('b', False) # 'b' indicates that it is a boolean, I initialize it to False
+            s_visited_locations = multiprocessing.Manager().dict() # I use a shared dictionary for courier routes
 
 
-            # setto i contraints del solver
+            # I set the solver contracts
             X, carried_load, traveled_distance, obj_function = self.set_constraints(instance, solver)
 
 
             if self.strategy == "linear":
-                # creo il processo usando come ottimizzatore quello lineare
+                # I create the process using the linear one as an optimizer
                 process = multiprocessing.Process(target=self.LO, args=(instance, X, solver, obj_function, s_obj_function, s_is_optimal, s_visited_locations))
             elif self.strategy == "binary":
-                # creo il processo utilizzando come ottimizzatore quello binario
+                # I create the process using the binary one as the optimizer
                 process = multiprocessing.Process(target=self.BO, args=(instance, X, solver, obj_function, s_obj_function, s_is_optimal, s_visited_locations))
 
             
-            # faccio partire il processo con l'ottimizzatore
+            # I start the process with the optimizer
             process.start()
 
 
-            # Aspetta che il processo termini o che scada il timeout, dal timeout devo togliere il tempo impiegato per creare il solver 
+            # Wait for the process to finish or for the timeout to expire, from the timeout I have to subtract the time taken to create the solver 
             current_time = t.time()
             passed_time = int((current_time - start_time))
             process_timeout = self.timeout - passed_time
             process.join(process_timeout)
 
-            # se dopo il tempo di timeout il processo è ancora vivo allora lo killo
+            # if after the timeout the process is still alive then I kill it
             if process.is_alive():
                 print("Timeout! Killing the optimizer...\n")
-                process.terminate()  # Termina il processo se è ancora attivo
-                process.join()  # Aspetta che il processo termini
+                process.terminate()  # Kill the process if it is still active
+                process.join()  # Wait for the process to finish
             else:
                 print("Process completed. The optimizer found the best solution!\n")
 
 
-        # Prendo i valori che mi servono: tempo impiegato dall'ottimizzatore, ultima objective function trovata, ottimalità e le visited_locations
+        # I take the values ​​I need: time taken by the optimizer, last objective function found, optimality and the visited_locations
         # visited_locations = get_visited_locations(instance, X, solver)
         current_time = t.time()
         passed_time = current_time - start_time
 
-        # controllo i valori ritornati
+        # I check the returned values
         if int(passed_time) >= 300 and s_is_optimal.value == False and s_obj_function.value == 0 and not s_visited_locations:
             return int(passed_time), s_is_optimal.value, "N/A failed to encode", s_visited_locations
 
@@ -201,10 +200,10 @@ class SMTsolver:
 
     def set_constraints(self, instance, solver):
 
-        # setto l'implementaione di exactly_one
+        # I set the implementation of exactly_one
         exactly_one = ExactlyOne
         at_least_k = at_least_k_np
-        # prendiamo i dati in ingresso dell'istanza
+        # we take the input data of the instance
         m, n, l, s, D = instance.get_values()
 
         if self.fair_division == "no_fair":
@@ -218,42 +217,42 @@ class SMTsolver:
 
         # DECISION VARIABLES
 
-        # X_i_k = j  <->  il corriere i è in posizione j al momento k
-        # i = 0,..., m-1 (corrieri)
-        # k = 0,..., n+1 (momenti temporali)
-        # j = 1,..., n+1 dove n+1 è la base (posizione)
+        # X_i_k = j  <->  courier i is in position j at time k
+        # i = 0,..., m-1 (couriers)
+        # k = 0,..., n+1 (temporal moments)
+        # j = 1,..., n+1 where n+1 is the base (position)
         # X = [[Symbol(f"x_{i}_{k}", INT) for i in range(m)] for k in range(n+2)]
         X = [[Symbol(f"x_{i}_{k}", INT) for k in range(k_upper_bound+2)] for i in range(m)]
 
 
-        # carried_load[i] terrà il peso totale portato dal corriere i-esimo
+        # carried_load[i] will hold the total weight carried by the i-th courier
         carried_load = [Symbol(f"carried_load_{i}", INT) for i in range(m)]
 
-        # traveled_distance[i] terrà la distanza totale percorsa dal corriere i-esimo
+        # traveled_distance[i] will hold the total distance traveled by the i-th courier
         traveled_distance = [Symbol(f"traveled_distance_{i}", INT) for i in range(m)]
 
-        # obj_function sarà il valore massimo tra tutte le distanze percorse
+        # obj_function it will be the maximum value among all the distances travelled
         obj_function = Symbol(f"obj_function", INT)
 
 
-        # definiamo il dominio di X, j = 1,..., n+1 dove n+1 è la base (posizione)
+        # we define the domain of X, j = 1,..., n+1 where n+1 is the base (position)
         domain_X = []
         for row in X:
             row_domain = And([And(GE(x, Int(1)),
                                     LE(x, Int(n+1))) for x in row])
             domain_X.append(row_domain)
 
-        # imponiamo il dominio di X al solver
+        # we impose the domain of X on the solver
         solver.add_assertion(And(domain_X))
 
 
 
-        # TUTTI I CORRIERI DEVONO INIZIARE IN BASE (al momento k=0 il corriere è in j=n+1)
+        # ALL COURIERS MUST START IN BASE (currently k=0 the courier is in j=n+1)
         for i in range(m):
             solver.add_assertion(Equals(X[i][0], Int(n+1)))
 
 
-        # TUTTI I CORRIERI PRIMA O POI DEVONO TORNARE IN BASE (in un momento k>=1 il corriere dev'essere almeno una volta in j=n+1)
+        # ALL COURIERS SOONER OR LATER MUST RETURN TO BASE (at a time k>=1 the courier must be at j=n+1 at least once)
         for i in range(m):
             back_row_constr = Or(
                 [Equals(X[i][k], Int(n+1)) for k in range(1, k_upper_bound+2)]
@@ -261,7 +260,7 @@ class SMTsolver:
             solver.add_assertion(back_row_constr)
     
         
-        # SE UN CORRIERE È IN BASE AL MOMENTO K ALLORA LO SARÀ ANCHE AL MOMENTO K+1 (esluso il momento 0)
+        # IF A COURIER IS BASED ON MOMENT K THEN IT WILL ALSO BE BASED ON MOMENT K+1 (excluding moment 0)
         for i in range(m):
             for k in range(1, k_upper_bound+1):
                 solver.add_assertion(
@@ -272,7 +271,7 @@ class SMTsolver:
                 )
 
         
-        # TUTTI I LUOGHI DEVONO ESSERE VISITATI SOLO UNA VOLTA
+        # ALL PLACES SHOULD ONLY BE VISITED ONCE
         for j in range(1, n+1):
             assertions = [Equals(X[i][k], Int(j)) for i in range(m) for k in range(1, k_upper_bound + 1)]
             # solver.add_assertion(exactly_one(assertions, f"one_visit_{j}")) # <------ usa questo per il tuo exactly_one
@@ -281,7 +280,7 @@ class SMTsolver:
 
         ### FAIR LOAD DIVISION CONSTRAINT ###
         if self.fair_division == "fair":
-            # se i corrieri devono portare almeno un certo numero di pacchi allora in X[i] almeno un certo numero di elementi dev'essere diverso da 7
+            # if couriers must carry at least a certain number of parcels then in X[i] at least a certain number of elements must be different from 7
             for i in range(m):
                 load_division_assertions = [NotEquals(X[i][k], Int(n+1)) for k in range(1, k_upper_bound + 1)]
                 solver.add_assertion(at_least_k(load_division_assertions, fair_division_coefficient, f"fair_load_{i}"))
@@ -299,43 +298,43 @@ class SMTsolver:
 
 
 
-        # carried_load[i] avrà la somma di tutti i pesi trasportati dal corrieri i
+        # carried_load[i] will have the sum of all the weights transported by the couriers
         for i in range(m):
-            # In implications metto le implicazioni che uso per calcolare le somme dei pesi
+            # In implications I put the implications that I use to calculate the sums of the weights
             implications = []
             for j in range(1, n+1):
-                # Metto qui la somma per ogni posizione visitata
-                # Se X[i][k] è uguale a j allora in Plus metto s[j-1], altrimenti metto 0
-                # In sum_expr metto la somma di tutti i pesi trasportati
+                # I put the sum here for each location visited
+                # If X[i][k] is equal to j then in Plus I put s[j-1], otherwise I put 0
+                # In sum_expr I put the sum of all the weights transported
                 sum_expr = Plus([Ite(Equals(X[i][k], Int(j)),
                                     Int(s[j - 1]), 
                                     Int(0)) for k in range(1, k_upper_bound+1)])
                 
                 implications.append(sum_expr)
 
-            # Aggiungi l'assertion al solver: carried_load[i] = somma dei pesi trasportati
+            # Add the assertion to the solver: carried_load[i] = sum of carried weights
             solver.add_assertion(Equals(carried_load[i], Plus(implications)))
 
 
 
-        # OGNI CORRIERE NON PUÒ TRASPORTARE PIÙ DI UN CERTO PESO
+        # EACH COURIER CANNOT CARRY MORE THAN A CERTAIN WEIGHT
         for i in range(m):
             solver.add_assertion(LE(carried_load[i], Int(l[i])))
 
 
         
-        # traveled_distances[i] avrà la somma delle distanza percorse dal corriere i
+        # traveled_distances[i] will have the sum of the distances traveled by courier i
         for i in range(m):
             distances = []
 
-            # prendo la distanza dalla posizione iniziale
+            # I take the distance from the initial position
             for j in range(1, n+2):
                 first_distance = Plus([Ite(Equals(X[i][1], Int(j)),
                                             Int(int(D[n][j-1])),
                                             Int(0))])
                 distances.append(first_distance)
                 
-            # prendo le distanze tra due posizioni visitate consecutivamente
+            # I distance myself between two consecutively visited locations
             for k in range(1, k_upper_bound+1):
 
                 for j1 in range(1, n + 2):
@@ -349,7 +348,7 @@ class SMTsolver:
             solver.add_assertion(Equals(traveled_distance[i], Plus(distances)))
 
 
-        # impongo che la obj_function sia il valore maggiore tra le distanze percorse dai corrieri
+        # I set the obj_function to be the largest value among the distances traveled by the couriers
         for i in range(m):
             solver.add_assertion(GE(obj_function, traveled_distance[i]))
 
@@ -399,7 +398,7 @@ class SMTsolver:
             solver.add_assertion(LE(obj_function, Int(middle_bound)))
 
 
-            # prendo lo stato dal solver
+            # I get the state from the solver
             status = solver.check_sat()
 
 
@@ -409,17 +408,17 @@ class SMTsolver:
                 print()
 
 
-                # salvo questo modello come previousModel
+                # I save this model as previousModel
                 previousModel = solver.get_model()
 
-                # prendo la objective function dal modello
+                # I take the objective function from the model
                 previous_obj_function = previousModel.get_value(obj_function)
 
-                # update dell'upper_bound
+                # update upper_bound update
                 upper_bound = previous_obj_function.constant_value()
                 print(f"The new upper bound is: {upper_bound}")
 
-                # aggiorno il valore condiviso tra i processi
+                # I update the shared value between processes
                 shared_obj_function.value = int(solver.get_value(obj_function).serialize())
                 self.set_visited_locations(instance, X, previousModel, shared_visited_locations)
             
@@ -438,11 +437,11 @@ class SMTsolver:
                 is_sat = False
                 shared_is_optimal.value = False
         
-        # se sono qui ho avuto il tempo di trovare la soluzione migliore possibile
+        # if I'm here I've had time to find the best possible solution
         shared_is_optimal.value = True
-        # come modello riprendo l'ultimo trovato
+        # I use the latest finding as a model
         model = previousModel
-        # aggiorno il valore finale della objective function condivisa tra i processi
+        # I update the final value of the objective function shared between processes
         shared_obj_function.value = int(model.get_value(obj_function).serialize())
 
 
@@ -458,41 +457,41 @@ class SMTsolver:
         solver.push()
 
         while(is_sat):
-            # prendo lo stato dal solver
+            # I get the state from the solver
             status = solver.check_sat()
 
             if status is True:
-                # ho trovato una soluzione quindi incremento il counter
+                # I found a solution so I increase the counter
                 solution_number = solution_number + 1
                 # print(solution_number)
 
-                # salvo questo modello come previousModel
+                # I save this model as previousModel
                 previousModel = solver.get_model()
 
-                # prendo la objective function dal modello
+                # I take the objective function from the model
                 previous_obj_function = int(solver.get_value(obj_function).serialize())
                 print(f"Solution number: {solution_number}, Objective function: {previous_obj_function}")
 
-                # impongo al solver di trovare una soluzione migliore
+                # I force the solver to find a better solution
                 solver.add_assertion(LT(obj_function, Int(previous_obj_function)))
 
-                # aggiorno il valore condiviso tra i processi
+                # I update the shared value between processes
                 shared_obj_function.value = previous_obj_function
                 self.set_visited_locations(instance, X, previousModel, shared_visited_locations)
 
 
             elif status is False:
-                # esco dal ciclo di ricerca delle soluzioni
+                # I get out of the cycle of finding solutions
                 is_sat = False
 
             else:
-                # esco dal ciclo di ricerca delle soluzioni
+                # I get out of the cycle of finding solutions
                 is_sat = False
                 shared_is_optimal.value = False
 
-        # se sono qui ho avuto il tempo di trovare la soluzione migliore possibile
+        # if I'm here I've had time to find the best possible solution
         shared_is_optimal.value = True
-        # come modello riprendo l'ultimo trovato
+        # I use the latest finding as a model
         model = previousModel
-        # aggiorno il valore finale della objective function condivisa tra i processi
+        # I update the final value of the objective function shared between processes
         shared_obj_function.value = int(model.get_value(obj_function).serialize())

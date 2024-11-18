@@ -1,11 +1,10 @@
 import argparse
 from utils import *
 
-'''
+
 from CPMOD.cp.solver import CPsolver
 from MIPMOD.MIP_CLASS import MIPSolver
 from SATMOD.SAT.SAT_solver import SATsolver
-'''
 from SMTMOD.SMT.SMT_solver import SMTsolver
 
 
@@ -62,7 +61,6 @@ def main():
             symmetry_breaking = args.symmetry_breaking,
             fair_division = args.fair_division
         )
-    '''
     elif args.approach == "cp":
         solver = CPsolver(
             data=input_data, 
@@ -140,7 +138,7 @@ def main():
         solver.solve()
     else:
         raise argparse.ArgumentError(None, "Please select a solver between cp, sat, smt or mip")
-    '''
+
         # Error printing
     if args.approach == "sat":
         if args.num_instance < 0 or args.num_instance > 21: 
