@@ -331,10 +331,40 @@
         ]
     },
     "cvc5 linear no_fair sb": {
-        "time": 300,
+        "time": 301,
         "optimal": false,
-        "obj": 0,
-        "sol": []
+        "obj": 436,
+        "sol": [
+            [
+                4
+            ],
+            [],
+            [
+                6,
+                5,
+                2
+            ],
+            [
+                8
+            ],
+            [
+                9
+            ],
+            [],
+            [
+                12,
+                13,
+                1,
+                10
+            ],
+            [],
+            [],
+            [
+                11,
+                7,
+                3
+            ]
+        ]
     },
     "cvc5 linear fair no_sb": {
         "time": 3,
@@ -451,10 +481,40 @@
         ]
     },
     "cvc5 binary no_fair sb": {
-        "time": 300,
-        "optimal": false,
-        "obj": 0,
-        "sol": []
+        "time": 41,
+        "optimal": true,
+        "obj": 436,
+        "sol": [
+            [
+                4,
+                6,
+                5,
+                2
+            ],
+            [],
+            [
+                9
+            ],
+            [
+                13
+            ],
+            [
+                3
+            ],
+            [
+                12,
+                10,
+                11,
+                1,
+                7
+            ],
+            [
+                8
+            ],
+            [],
+            [],
+            []
+        ]
     },
     "cvc5 binary fair no_sb": {
         "time": 2,

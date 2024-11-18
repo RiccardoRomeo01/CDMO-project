@@ -140,7 +140,6 @@ def main():
     else:
         raise argparse.ArgumentError(None, "Please select a solver between cp, sat, smt or mip")
     
-    
         # Error printing
     if args.approach == "sat":
         if args.num_instance < 0 or args.num_instance > 21: 
