@@ -1031,7 +1031,7 @@
         ]
     },
     "yices linear no_fair sb": {
-        "time": 301,
+        "time": 300,
         "optimal": false,
         "obj": 366,
         "sol": [
@@ -1066,7 +1066,7 @@
         ]
     },
     "yices binary no_fair sb": {
-        "time": 301,
+        "time": 300,
         "optimal": false,
         "obj": 248,
         "sol": [

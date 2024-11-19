@@ -331,7 +331,7 @@
         ]
     },
     "cvc5 linear no_fair sb": {
-        "time": 301,
+        "time": 300,
         "optimal": false,
         "obj": 436,
         "sol": [
@@ -597,7 +597,7 @@
         ]
     },
     "yices linear no_fair no_sb": {
-        "time": 301,
+        "time": 300,
         "optimal": false,
         "obj": 436,
         "sol": [

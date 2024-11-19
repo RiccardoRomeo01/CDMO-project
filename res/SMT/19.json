@@ -1,6 +1,6 @@
 {
     "cvc5 binary fair no_sb": {
-        "time": 301,
+        "time": 300,
         "optimal": false,
         "obj": 595,
         "sol": [

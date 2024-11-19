@@ -33,7 +33,7 @@
         ]
     },
     "z3 linear no_fair sb": {
-        "time": 301,
+        "time": 300,
         "optimal": false,
         "obj": 443,
         "sol": [
@@ -173,7 +173,7 @@
         ]
     },
     "z3 binary no_fair sb": {
-        "time": 301,
+        "time": 300,
         "optimal": false,
         "obj": 366,
         "sol": [
