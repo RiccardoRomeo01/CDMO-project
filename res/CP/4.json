@@ -33,11 +33,7 @@
         ]
     },
     "gecode": {
-<<<<<<< HEAD
-        "time": 114,
-=======
-        "time": 57,
->>>>>>> 8e5673e97bd7e0d58e6429c015262c3a7d5367a0
+        "time": 104,
         "optimal": true,
         "obj": 220,
         "sol": [
