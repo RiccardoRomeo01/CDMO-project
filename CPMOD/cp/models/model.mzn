@@ -13,8 +13,8 @@ array [1..n+1,1..n+1] of int: D;
 
 %parameter for the test
 int: up_bound;
-int :low_bound;%here we don't use it 
-int :d_low_bound;
+%int :low_bound;%here we don't use it 
+int :d_low_bound=0;
 
 
 array[ITEM] of var COURIER: assigned;%evry item is assigned to a courier

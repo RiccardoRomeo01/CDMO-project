@@ -9,21 +9,21 @@
                 4
             ],
             [
-                8
+                6,
+                9
             ],
             [
-                6
+                8
             ],
             [
                 5
             ],
             [
                 2,
-                7,
                 3
             ],
             [
-                9
+                7
             ]
         ]
     },
@@ -56,7 +56,7 @@
         ]
     },
     "chuffed_symbreak": {
-        "time": 0,
+        "time": 10,
         "optimal": true,
         "obj": 226,
         "sol": [
@@ -84,7 +84,7 @@
         ]
     },
     "chuffed": {
-        "time": 62,
+        "time": 60,
         "optimal": true,
         "obj": 226,
         "sol": [

@@ -12,8 +12,8 @@ array[ITEM] of int: s;%the size of the item
 array [1..n+1,1..n+1] of int: D;
 
 int: up_bound;
-int :low_bound;
-int :d_low_bound;
+%int :low_bound;
+int :d_low_bound=0;
 
 
 array[ITEM] of var COURIER: assigned;
@@ -36,12 +36,12 @@ constraint forall(c in COURIER)(pos[c,max_num_of_item+2]=n+1);
 
 array[COURIER] of var d_low_bound..up_bound: obj_dist;
 
-var low_bound..up_bound: makespan; %to change 
+var d_low_bound..up_bound: makespan; %to change 
 
 
 
 % ensure that each courier does not exceed the max capacity
-constraint bin_packing_capa(ll,assigned,s);
+constraint bin_packing_capa(l,assigned,s);
   
        
                                                   
