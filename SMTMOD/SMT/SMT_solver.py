@@ -3,6 +3,7 @@ from pysmt.typing import INT
 from pysmt.logics import QF_LIA
 from pysmt.exceptions import SolverReturnedUnknownResultError
 import time as t
+import copy
 from SMTMOD.SMT.SMT_constants import *
 from SMTMOD.SMT.SMT_utils import *
 import multiprocessing
@@ -35,7 +36,7 @@ class SMTsolver:
                     courier_path.append(sol_assignment)
                     
             # print(courier_path)
-            shared_visited_locations[i] = courier_path
+            shared_visited_locations[i] = copy.deepcopy(courier_path)
 
 
 
@@ -470,7 +471,7 @@ class SMTsolver:
 
                 # I take the objective function from the model
                 previous_obj_function = int(solver.get_value(obj_function).serialize())
-                print(f"Solution number: {solution_number}, Objective function: {previous_obj_function}")
+                # print(f"Solution number: {solution_number}, Objective function: {previous_obj_function}")
 
                 # I force the solver to find a better solution
                 solver.add_assertion(LT(obj_function, Int(previous_obj_function)))
@@ -478,6 +479,7 @@ class SMTsolver:
                 # I update the shared value between processes
                 shared_obj_function.value = previous_obj_function
                 self.set_visited_locations(instance, X, previousModel, shared_visited_locations)
+                print(f"Solution number: {solution_number}, Objective function: {previous_obj_function}")
 
 
             elif status is False:
