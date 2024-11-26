@@ -74,6 +74,8 @@ class MIPSolver:
             model.Add(sum(X[(i, j, k)] for j in range(n) for k in range(n+1)) <= max_items)
             model.Add(sum(X[(i, j, k)] for j in range(n) for k in range(n+1)) >= min_items)
 
+        
+        '''
         bigM = 2 * n
         for i in range(m):
             for k in range(n):
@@ -82,6 +84,20 @@ class MIPSolver:
                 for k in range(n):
                     model.Add(T[j] >= T[k] + 1 - (bigM * (1 - X[(i, k, j)])))
                     model.Add(T[j] <= T[k] + 1 + (bigM * (1 - X[(i, k, j)])))  
+        '''
+        # Visit time constraints
+        bigM = 2 * n
+        for i in range(m):
+            for k in range(n):
+                for j in range(n):
+                    # Enforce time ordering
+                    model.Add(T[j] >= T[k] + 1 - bigM * (1 - X[(i, k, j)]))
+                    model.Add(T[j] <= T[k] + 1 + bigM * (1 - X[(i, k, j)]))
+        
+        # Domain constraints for visit order
+        for k in range(n):
+            model.Add(T[k] >= 1)
+            model.Add(T[k] <= n)
         
         for i in range(m):
             model.Add(tot_dist[i] == sum(X[(i, j, k)] * D[j][k] for j in range(n+1) for k in range(n+1)))

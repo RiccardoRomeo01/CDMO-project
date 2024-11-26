@@ -34,7 +34,7 @@ def main():
 
     parser.add_argument("-s", "--strategy", help="Search strategy", default="all", type= str)
 
-    parser.add_argument("-b", "--symmetry_breaking", help="Symmetry breaking flag", default="sb", type=str)
+    parser.add_argument("-b", "--symmetry_breaking", help="Symmetry breaking flag", default="all", type=str)
 
     parser.add_argument("-e", "--encoding", help="Encoding to use", default="all", type= str)
 
