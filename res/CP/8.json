@@ -1,11 +1,11 @@
 {
     "gecode_symbreak": {
-        "time": 0,
+        "time": 10,
         "optimal": true,
         "obj": 186,
         "sol": [
             [
-                6,
+                5,
                 10
             ],
             [
@@ -19,7 +19,7 @@
                 2
             ],
             [
-                5
+                6
             ],
             [
                 8
@@ -33,7 +33,7 @@
         ]
     },
     "gecode": {
-        "time": 78,
+        "time": 43,
         "optimal": true,
         "obj": 186,
         "sol": [
@@ -66,7 +66,7 @@
         ]
     },
     "chuffed_symbreak": {
-        "time": 0,
+        "time": 54,
         "optimal": true,
         "obj": 186,
         "sol": [
@@ -99,8 +99,8 @@
         ]
     },
     "chuffed": {
-        "time": 300,
-        "optimal": false,
+        "time": 287,
+        "optimal": true,
         "obj": 186,
         "sol": [
             [

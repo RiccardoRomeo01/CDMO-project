@@ -1,7 +1,7 @@
 {
     "gecode_symbreak": {
-        "time": 0,
-        "optimal": true,
+        "time": 300,
+        "optimal": false,
         "obj": 167,
         "sol": [
             [
@@ -45,35 +45,35 @@
                 9
             ],
             [
+                3,
+                17,
+                16,
+                15
+            ],
+            [
                 5,
+                13
+            ],
+            [
+                4,
                 11,
                 12
             ],
             [
-                4,
-                14
-            ],
-            [
-                3,
-                7,
-                13
-            ],
-            [
                 1,
-                8,
-                15
+                6,
+                8
             ],
             [
-                6,
-                17,
-                16,
+                7,
+                14,
                 10
             ]
         ]
     },
     "chuffed_symbreak": {
-        "time": 0,
-        "optimal": true,
+        "time": 300,
+        "optimal": false,
         "obj": 167,
         "sol": [
             [

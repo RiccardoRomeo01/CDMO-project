@@ -1,6 +1,6 @@
 {
     "gecode_symbreak": {
-        "time": 0,
+        "time": 29,
         "optimal": true,
         "obj": 220,
         "sol": [
@@ -33,7 +33,7 @@
         ]
     },
     "gecode": {
-        "time": 104,
+        "time": 111,
         "optimal": true,
         "obj": 220,
         "sol": [
@@ -66,7 +66,7 @@
         ]
     },
     "chuffed_symbreak": {
-        "time": 0,
+        "time": 209,
         "optimal": true,
         "obj": 220,
         "sol": [
