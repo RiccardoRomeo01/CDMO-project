@@ -29,7 +29,7 @@ All the solvers can be used by running the file main.py with the command python 
 <li> <code> -t T, --timeout T</code> Set the timeout in T seconds, default = 300s.
 
 **Example of execution line**:<br>
-python main.py -a mip -n 1 -sv SCIP -b sb
+<code>python main.py -a mip -n 1 -sv SCIP -b sb</code>
 
 
 ## Execution on Docker
