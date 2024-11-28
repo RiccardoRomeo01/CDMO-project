@@ -104,7 +104,8 @@ class MIPSolver:
         
         if sb == "sb":
             for i in range(m - 1):
-                model.Add(tot_dist[i] <= tot_dist[i + 1])
+                if li[i] == li[i + 1]:
+                    model.Add(tot_dist[i] <= tot_dist[i + 1])
 
     def solve(self):
         # Define instance numbers to run: all if 0, otherwise only the specified instance
