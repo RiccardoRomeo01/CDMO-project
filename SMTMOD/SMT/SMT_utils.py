@@ -61,7 +61,8 @@ def serialize_SMT_solution(sol):
     for el in sol:
         path = []
         for e in el:
-            path.append(int(e.serialize()))
+            # path.append(int(e.serialize()))
+            path.append(e)
         serialized_sol.append(path)
     
     return serialized_sol

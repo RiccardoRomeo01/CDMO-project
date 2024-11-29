@@ -31,8 +31,10 @@ class SMTsolver:
         for i in range(m):
             courier_path = []
             for k in X[i]:
-                sol_assignment = model.get_value(k)
-                if sol_assignment != Int(n+1):
+                # sol_assignment = copy.deepcopy(model.get_value(k))
+                sol_assignment = int(model.get_value(k).serialize())
+                # if sol_assignment != Int(n+1):
+                if sol_assignment != n+1:
                     courier_path.append(sol_assignment)
                     
             # print(courier_path)
@@ -58,7 +60,7 @@ class SMTsolver:
 
             if self.strategy == "linear":
                 # I create the process using the linear one as an optimizer
-                process = multiprocessing.Process(target=self.LO, args=(instance, X, solver, obj_function, s_obj_function, s_is_optimal, s_visited_locations))
+                process = multiprocessing.Process(target=self.LO, args=(instance, X, solver, obj_function, traveled_distance, s_obj_function, s_is_optimal, s_visited_locations))
             elif self.strategy == "binary":
                 # I create the process using the binary one as the optimizer
                 process = multiprocessing.Process(target=self.BO, args=(instance, X, solver, obj_function, s_obj_function, s_is_optimal, s_visited_locations))
@@ -91,6 +93,7 @@ class SMTsolver:
         # I check the returned values
         if int(passed_time) >= 300 and s_is_optimal.value == False and s_obj_function.value == 0 and not s_visited_locations:
             return int(passed_time), s_is_optimal.value, "N/A failed to encode", s_visited_locations
+    
 
         return int(passed_time), s_is_optimal.value, s_obj_function.value, s_visited_locations
 
@@ -324,7 +327,7 @@ class SMTsolver:
 
 
         
-        # traveled_distances[i] will have the sum of the distances traveled by courier i
+        # traveled_distance[i] will have the sum of the distances traveled by courier i
         for i in range(m):
             distances = []
 
@@ -349,9 +352,19 @@ class SMTsolver:
             solver.add_assertion(Equals(traveled_distance[i], Plus(distances)))
 
 
-        # I set the obj_function to be the largest value among the distances traveled by the couriers
-        for i in range(m):
-            solver.add_assertion(GE(obj_function, traveled_distance[i]))
+        #### Here we find the maximum distance among all couriers ####
+        # Auxiliary variable to find the maximum
+        max_val = Symbol("max_val", INT)
+
+        # max_val must be greater than each distance d among couriers
+        for d in traveled_distance:
+            solver.add_assertion(GE(max_val, d))
+
+        # We impose to max_val to be equal to one of the traveled distances
+        solver.add_assertion(Or([Equals(max_val, d) for d in traveled_distance]))
+
+        # we impose obj function equal to max_val
+        solver.add_assertion(Equals(obj_function, max_val))
 
 
         # return variables
@@ -447,7 +460,7 @@ class SMTsolver:
 
 
 
-    def LO(self, instance, X, solver, obj_function, shared_obj_function, shared_is_optimal, shared_visited_locations):
+    def LO(self, instance, X, solver, obj_function, traveled_distance, shared_obj_function, shared_is_optimal, shared_visited_locations):
 
         previousModel = None
         is_sat = True
@@ -470,16 +483,22 @@ class SMTsolver:
                 previousModel = solver.get_model()
 
                 # I take the objective function from the model
+                
                 previous_obj_function = int(solver.get_value(obj_function).serialize())
-                # print(f"Solution number: {solution_number}, Objective function: {previous_obj_function}")
-
-                # I force the solver to find a better solution
-                solver.add_assertion(LT(obj_function, Int(previous_obj_function)))
-
+                
                 # I update the shared value between processes
                 shared_obj_function.value = previous_obj_function
                 self.set_visited_locations(instance, X, previousModel, shared_visited_locations)
-                print(f"Solution number: {solution_number}, Objective function: {previous_obj_function}")
+                print(f"Solution number: {solution_number}, Objective function: {previous_obj_function}, {from_dict_to_list(shared_visited_locations)}")
+                # print(f"Solution number: {solution_number}, Objective function: {previous_obj_function}")
+
+                '''
+                for distance in traveled_distance:
+                    print(int(solver.get_value(distance).serialize()))
+                '''
+
+                # I force the solver to find a better solution
+                solver.add_assertion(LT(obj_function, Int(previous_obj_function)))
 
 
             elif status is False:
