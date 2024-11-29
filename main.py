@@ -14,8 +14,7 @@ def main():
     parser.add_argument("-a", "--approach", help="Select a modelling approach between cp sat, smt and mip",
                         default="cp", type=str)
 
-    parser.add_argument("-m", "--model", help="Select a model for the solver choosen, look for additional information in the cp folder ",
-                        default=1, type=int)
+   
     parser.add_argument("-sv", "--solver", help="Select a solver for the mip model",default="all", type=str)
 
     parser.add_argument("-n", "--num_instance",
@@ -62,11 +61,12 @@ def main():
             fair_division = args.fair_division
         )
     elif args.approach == "cp":
-        solver = CPsolver(
+         solver = CPsolver(
             data=input_data, 
             output_dir=args.output_dir, 
-            timeout=int(args.timeout), 
-            model=args.model
+            symmetry_breaking = args.symmetry_breaking,
+            solver_name=args.strategy,
+            timeout=int(args.timeout)
         ) 
     elif args.approach == "sat":
         solver = SATsolver(
@@ -89,10 +89,11 @@ def main():
         )
     elif args.approach == 'all':
         solver = CPsolver(
-            data=load_data_cp(args.input_dir, args.num_instance), 
+            data=input_data, 
             output_dir=args.output_dir, 
-            timeout=int(args.timeout), 
-            model=args.model
+            symmetry_breaking = 'all',
+            solver_name='all',
+            timeout=int(args.timeout)
         ) 
 
         print("Solving with CP ...")

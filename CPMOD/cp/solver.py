@@ -5,34 +5,33 @@ from CPMOD.cp.cp_utils import *
 
 
 class CPsolver:
-    def __init__(self, data, output_dir, timeout=300, model=1):
+    def __init__(self, data, output_dir,symmetry_breaking,solver_name, timeout=300):
+        self.data=data
         self.output_dir = output_dir
         self.timeout = timeout
-        self.symmetry = None
+        self.symmetrys = symmetry_breaking
+        self.solvers=solver_name
         self.path = None
-        self.model = model
-        if self.model == CIRCUIT_MODEL_CP:
-            self.data = data
-       
-    def solve(self):
-        if self.model == CIRCUIT_MODEL_CP:
-            self.circuit_model_solve()
+        self.symmetry=None
 
+           
+       
+    
     def get_model_circuit(self):
-        if self.symmetry == SYMMETRY_BREAKING:
+        if int(self.symmetry) == SYMMETRY_BREAKING:
             self.solver_path = "./CPMOD/cp/models/model_sym.mzn"#"C:/Users/morne/esktop/project Combinatorial deccision making/other_project/MCPP-main/MCPP-main/cp/src/models/model.mzn"#
-        elif self.symmetry == NO_SYMMETRY_BREAKING:
+        elif int(self.symmetry) == NO_SYMMETRY_BREAKING:
             self.solver_path = "./CPMOD/cp/models/model.mzn"
         model = Model(self.solver_path)
         return model
 
     def name_solver(self, solver_name):
         name = solver_name
-        if self.symmetry == SYMMETRY_BREAKING:
+        if int(self.symmetry) == SYMMETRY_BREAKING:
             name += SIMMETRY_BREAK_STRING
         return name
 
-    def circuit_model_solve(self):
+    def solve(self):
         '''
         :param model: a minizinc model (circuit or grpah based) to solve the current instance
 
@@ -52,13 +51,24 @@ class CPsolver:
             corresponding_dict = sorting_couriers(values)  # Passing by reference
             # solve for each file
             results = {}
-            for solver_name in CP_SOLVERS:
+            solvers=[]
+            if(self.solvers=='all'):
+                solvers=CP_SOLVERS
+            else:
+                solvers=[self.solvers]
+            for solver_name in solvers:
                 solver = Solver.lookup(solver_name)
-                print('Current solver', solver_name)
-                for symmetry in SIM_LIST:
+                
+                symmetrys=[]
+                if(self.symmetrys=='all'):
+                    symmetrys=SIM_LIST
+                else:
+                    symmetrys=[self.symmetrys]
+                for symmetry in symmetrys:
                     self.symmetry = symmetry
                     model = self.get_model_circuit()
                     solver_to_save = self.name_solver(solver_name)
+                    print('Current solver:', solver_to_save)
                     try:
                         instance = Instance(solver, model)
                         result = self.circuit_model_solve_instance(values, instance)
@@ -120,17 +130,17 @@ class CPsolver:
         all_travel = (True if min(courier_size) >= max(item_size) else False)
 
         
-        low_bound, d_low_bound = set_lower_bound(distances, all_travel)
+        #low_bound, d_low_bound = set_lower_bound(distances, all_travel)
         upper_bound = set_upper_bound(distances, all_travel, couriers)
         
         instance["m"] = couriers
         instance["n"] = items
-        instance["l"] = np.sort(courier_size)[::-1]
+        instance["l"] = courier_size
         instance["s"] = item_size
         instance["D"] = distances
         instance["up_bound"] = upper_bound
-        instance["low_bound"] = low_bound
-        instance["d_low_bound"] = 0
+        #instance["low_bound"] = low_bound
+        #instance["d_low_bound"] = 0
 
         '''
         instance["courier"] = couriers

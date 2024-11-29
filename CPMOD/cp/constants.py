@@ -1,6 +1,4 @@
 #CP
-CIRCUIT_MODEL_CP = 1
-
 CP_SOLVERS = ['gecode', 'chuffed']#'gist'
 
 OPTIMAL_CASE = 1
