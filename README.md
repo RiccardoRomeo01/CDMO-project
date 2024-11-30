@@ -60,7 +60,7 @@ Replace "local_path" with the path on your local machine where you want to save 
 
 ### 5. Removing old results
 To avoid overwriting old results, you may want to delete the <code>/res</code> folder before running the container again.
-- Start a temporary container in interactive mode: <code>docker ru -it --name temp-container cdmo /bin/bash</code> <br>
+- Start a temporary container in interactive mode: <code>docker rm -it --name temp-container cdmo /bin/bash</code> <br>
 - Delete the <code>/res</code> folder: inside the container, run the following command to remove the <code>/res</code> folder: <code>rm -rf /res</code> <br>
 
 ### 6. Loading a Docker image (If you want to use GUROBI solver)
