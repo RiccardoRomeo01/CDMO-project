@@ -55,7 +55,7 @@ Replace "command" with the actual Python comman that start the project (e.g. <co
 ### 4. Retrieve results from the container
 After running the container, you may want to retrieve the resutls saved inside the container. 
 - Find the name of the container: use the following command to list all containers, both running and stopped, and find the "container_name" of the one you just ran: <code>docker ps -a</code> <br>
-- Copy the results folder to your local machine: to retrieve the results stored in the <code>/res</code> folder inside the container, use the <code>docker cp</code> command: <code>dockercp container_name:/res local_path</code> <br>
+- Copy the results folder to your local machine: to retrieve the results stored in the <code>/res</code> folder inside the container, use the <code>docker cp</code> command: <code>docker cp container_name:/res local_path</code> <br>
 Replace "local_path" with the path on your local machine where you want to save the results.
 
 ### 5. Removing old results
