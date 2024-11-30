@@ -89,7 +89,7 @@ def main():
         )
     elif args.approach == 'all':
         solver = CPsolver(
-            data=input_data, 
+            data=load_data_cp(args.input_dir, args.num_instance), 
             output_dir=args.output_dir, 
             symmetry_breaking = 'all',
             solver_name='all',
