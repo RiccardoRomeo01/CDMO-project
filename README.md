@@ -1,17 +1,19 @@
 # Multiple Couriers Planning Problem
 In this repository there is the solution of "Combinatorial Decision Making & Optimization" exam carried out as a group work at the University of Bologna by Mattia Buzzoni, Mirko Mornelli and Riccardo Romeo.
-<br><br>
+
 The goal of the Multiple Couriers Planning Problem (MCPP) is to assign items to couriers and plan their tours accordingly. Couriers must distribute all items without exceeding their load capacity.
 
 In this repository, you will find four solutions to this problem, each utilizing a different approach:
-<li> Constraint Programming (CP) implemented using MiniZinc
-<li> SATisfiability (SAT) using Z3 python library
-<li> Satisfiability Modulo Theory (SMT) realized using the solver independent python library pySMT
-<li> Mixed Integer Linear Programming (LP) deployed through Google OR-Tools
+- Constraint Programming (CP) implemented using MiniZinc
+- SATisfiability (SAT) using Z3 python library
+- Satisfiability Modulo Theory (SMT) realized using the solver independent python library pySMT
+- Mixed Integer Linear Programming (LP) deployed through Google OR-Tools
 
 ## Installation
-To install all the requirements run: <br>
-<code> pip install -r requirements.txt </code>
+To install all the requirements run:
+---
+pip install -r requirements.txt
+---
 
 ## Execution
 All the solvers can be used by running the file main.py with the command <code>python main.py</code> and the following arguments:
@@ -29,9 +31,11 @@ All the solvers can be used by running the file main.py with the command <code>p
 | `-o path`, `--output_dir path`       | Specifies the directory to save results.                                                                                                                    | Default: `./output`.                                                                                                       |
 | `-t T`, `--timeout T`                | Sets a timeout for solving in seconds.                                                                                                                     | Default: `300s`.                                                                                                           |
 
-**Examples of execution lines**:<br>
-<code>python main.py -a mip -n 1 -sv SCIP -b sb</code> <br>
-<code>python main.py -a sat -n 4 -t 300 -s binary -e he -f fair -b sb</code>
+**Examples of execution lines**:
+'''
+python main.py -a mip -n 1 -sv SCIP -b sb
+python main.py -a sat -n 4 -t 300 -s binary -e he -f fair -b sb
+'''
 
 ---
 ## Execution on Docker
