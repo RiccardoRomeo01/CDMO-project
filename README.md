@@ -64,7 +64,7 @@ To avoid overwriting old results, you may want to delete the <code>/res</code> f
 - Delete the <code>/res</code> folder: inside the container, run the following command to remove the <code>/res</code> folder: <code>rm -rf /res</code> <br>
 
 ### 6. Loading a Docker image (If you want to use GUROBI solver)
-If you have a Docker image saved as a <code>.tar</code> file (e.g. <code>cdmo.tar</code>), you can load it into Docker with the following command: <cpde>docker load -i cdmo.tar</code>
+If you have a Docker image saved as a <code>.tar</code> file (e.g. <code>cdmo.tar</code>), you can load it into Docker with the following command: <code>docker load -i cdmo.tar</code>
 
 
 ### 7. Decompress the Docker image
