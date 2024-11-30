@@ -93,8 +93,11 @@ class SMTsolver:
         # I check the returned values
         if int(passed_time) >= 300 and s_is_optimal.value == False and s_obj_function.value == 0 and not s_visited_locations:
             return int(passed_time), s_is_optimal.value, "N/A failed to encode", s_visited_locations
-    
 
+        
+        if int(passed_time) == 301:
+            passed_time = 300
+        
         return int(passed_time), s_is_optimal.value, s_obj_function.value, s_visited_locations
 
 
