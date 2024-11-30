@@ -33,33 +33,44 @@ All the solvers can be used by running the file main.py with the command <code>p
 <code>python main.py -a mip -n 1 -sv SCIP -b sb</code> <br>
 <code>python main.py -a sat -n 4 -t 300 -s binary -e he -f fair -b sb</code>
 
-
+---
 ## Execution on Docker
-First of all is needed to install docker: https://www.docker.com/products/docker-desktop/ <br>
+
+### 1. Install Docker
+Before proceeding, you need to install Docker on your machine. You can download Docker Desktop from the official website here: https://www.docker.com/products/docker-desktop/ <br>
 **Important**: <br>
-On docker there are all the implemented models, but the project doesn't work if you try to use GUROBI solver with MIP because the licence is not acceptable if the solver runs on another machine, so it is possible to use this solver with the Docker image (check the following to run that).<br>
+- **GUROBI solver** (which is used for MIP part) requires a valid license, and the license is not valid of the solver is running on another machine. This is why you need to run the solver in a Docker container where the license is valid. Follow the steps below to properly configure the container<br>
+---
+### 2. Build the Docker Image
+Once Docker is installed, you'll need to build a custom Docker image for your project. To do this, follow these steps:
+- Navigate to your project directory where the <code>Dockerfile</code> is located.
+- Build the Docker image by running the following command: <code>docker build -t name_image .</code> <br>
+"name_image" is the name you want to give to your Docker image. The <code>.</code> refers to the current directory, where Docker will look for the Dockerfile to build the image.
+---
+### 3. Run the Docker Container
+Once the image is built, you can run it as a container. This will execute the project inside the container.
+- To start the container, use the following command: <code>docker run name_image command</code> <br>
+Replace "command" with the actual Python comman that start the project (e.g. <code>python main.py</code>)
+---
+### 4. Retrieve results from the container
+After running the container, you may want to retrieve the resutls saved inside the container. 
+- Find the name of the container: use the following command to list all containers, both running and stopped, and find the "container_name" of the one you just ran: <code>docker ps -a</code> <br>
+- Copy the results folder to your local machine: to retrieve the results stored in the <code>/res</code> folder inside the container, use the <code>docker cp</code> command: <code>dockercp container_name:/res local_path</code> <br>
+Replace "local_path" with the path on your local machine where you want to save the results.
+---
+### 5. Removing old results
+To avoid overwriting old results, you may want to delete the <code>/res</code> folder before running the container again.
+- Start a temporary container in interactive mode: <code>docker ru -it --name temp-container cdmo /bin/bash</code> <br>
+- Delete the <code>/res</code> folder: inside the container, run the following command to remove the <code>/res</code> folder: <code>rm -rf /res</code> <br>
+---
+### 6. Loading a Docker image (If you want to use GUROBI solver)
+If you have a Docker image saved as a <code>.tar</code> file (e.g. <code>cdmo.tar</code>), you can load it into Docker with the following command: <cpde>docker load -i cdmo.tar</code>
 
-To run with docker, is needed to build the Docker image: <br>
-<code>docker build -t name_image .</code> <br>
-"name_image" is the name of image that you create
-<br>
+---
+### 7. Decompress the Docker image
+If the <code>.tar</code> file is compressed (e.g. <code>cdmo.tar.xz</code>), you will need to decompress it first. Use this command to extract the contents: <code>tar -xJvf cdmo.tar.xz</code>
 
-After that it is possible to run the container: <br>
-<code>docker run name_image command</code> <br>
-"command" is the python command to start the main.py as in the example as above<br>
-
-To retrieve the folder where there are the results you have to run the following command: <br>
-First, you have to check which is the name of the container that it was create with <code>docker ps -a</code> in order to obtain the <code>container_name</code> <br>
-<code>docker cp container_name:/res local_path</code> <br>
-"/res" is the folder where the results are saved on the container, "local_path" is the path on your computer where to save the results folder. 
-
-If the image is available, you need to load it on docker: <br>
-<code>docker load -i cdmo.tar</code> <br>
-Thus, you can run the container using the previous command.
-This is the only way to use GUROBI solver for MIP, because the licence is required during the solver installation. <br>
-**Important**: <br>
-The <code>cdmo.tar</code> is compressed in cdmo.tar.xz. To use it, you must first decompress it using the following command: <code>tar -xJvf cdmo.tar.xz</code>
-  
+---
 ## Authors
   - [Mattia Buzzoni](https://github.com/mattibuzzo13) 
   - [Mirko Mornelli](https://github.com/mirkomornelli)
