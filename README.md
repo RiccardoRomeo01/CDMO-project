@@ -49,7 +49,8 @@ After that it is possible to run the container: <br>
 "command" is the python command to start the main.py as in the example as above<br>
 
 To retrieve the folder where there are the results you have to run the following command: <br>
-<code>docker cp name_image:/res local_path</code> <br>
+First, you have to check which is the name of the container that it was create with <code>docker ps -a</code> in order to obtain the <code>container_name</code> <br>
+<code>docker cp container_name:/res local_path</code> <br>
 "/res" is the folder where the results are saved on the container, "local_path" is the path on your computer where to save the results folder. 
 
 If the image is available, you need to load it on docker: <br>
