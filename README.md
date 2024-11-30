@@ -55,7 +55,7 @@ To retrieve the folder where there are the results you have to run the following
 If the image is available, you need to load it on docker: <br>
 <code>docker load -i name_image.tar</code> <br>
 Thus, you can run the container using the previous command.
-This is the only way to use GUROBI solver for MIP, because the licence is required during the solver installation.
+This is the only way to use GUROBI solver for MIP, because the licence is required during the solver installation. <br>
 **Important**: <br>
 The <code>cdmo.tar</code> is compressed in cdmo.tar.xz. To use it, you must first decompress it using the following command: <code>tar -xJvf cdmo.tar.xz</code>
   
