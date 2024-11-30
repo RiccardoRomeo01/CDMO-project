@@ -11,9 +11,9 @@ In this repository, you will find four solutions to this problem, each utilizing
 
 ## Installation
 To install all the requirements run:
----
+```
 pip install -r requirements.txt
----
+```
 
 ## Execution
 All the solvers can be used by running the file main.py with the command <code>python main.py</code> and the following arguments:
@@ -32,10 +32,10 @@ All the solvers can be used by running the file main.py with the command <code>p
 | `-t T`, `--timeout T`                | Sets a timeout for solving in seconds.                                                                                                                     | Default: `300s`.                                                                                                           |
 
 **Examples of execution lines**:
-'''
+```
 python main.py -a mip -n 1 -sv SCIP -b sb
 python main.py -a sat -n 4 -t 300 -s binary -e he -f fair -b sb
-'''
+```
 
 ---
 ## Execution on Docker
