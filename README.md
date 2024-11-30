@@ -38,14 +38,15 @@ All the solvers can be used by running the file main.py with the command <code>p
 
 ### 1. Install Docker
 Before proceeding, you need to install Docker on your machine. You can download Docker Desktop from the official website here: https://www.docker.com/products/docker-desktop/ <br>
-**Important**: <br>
-- **GUROBI solver** (which is used for MIP part) requires a valid license, and the license is not valid of the solver is running on another machine. This is why you need to run the solver in a Docker container where the license is valid. Follow the steps below to properly configure the container<br>
 
 ### 2. Build the Docker Image
 Once Docker is installed, you'll need to build a custom Docker image for your project. To do this, follow these steps:
 - Navigate to your project directory where the <code>Dockerfile</code> is located.
 - Build the Docker image by running the following command: <code>docker build -t name_image .</code> <br>
 "name_image" is the name you want to give to your Docker image. The <code>.</code> refers to the current directory, where Docker will look for the Dockerfile to build the image.
+
+**Important**: <br>
+- **GUROBI solver** (which is used for MIP part) requires a valid license, and the license is not valid of the solver is running on another machine. This is why you need to run the solver in a Docker container where the license is valid. Follow the steps below to properly configure the container<br>
 
 ### 3. Run the Docker Container
 Once the image is built, you can run it as a container. This will execute the project inside the container.
