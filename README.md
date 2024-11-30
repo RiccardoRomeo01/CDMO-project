@@ -45,7 +45,7 @@ To run with docker, is needed to build the Docker image: <br>
 <br>
 
 After that it is possible to run the container: <br>
-<code>docker run --rm name_image command</code> <br>
+<code>docker run name_image command</code> <br>
 "command" is the python command to start the main.py as in the example as above<br>
 
 To retrieve the folder where there are the results you have to run the following command: <br>
