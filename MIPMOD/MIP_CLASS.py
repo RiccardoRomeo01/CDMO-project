@@ -114,7 +114,6 @@ class MIPSolver:
         simmetry_to_use = self.SB if self.symmetry_breaking == "all" else [self.symmetry_breaking]
 
         for instance_num in instance_numbers:
-
             instance_data = self.data[instance_num]
             m, n, li, sj, D = instance_data.get_values()
 
@@ -146,8 +145,23 @@ class MIPSolver:
                         'time': min(self.timeout, elapsed_time),
                         'optimal': status == pywraplp.Solver.OPTIMAL,
                         'obj': int(round(self.Obj.solution_value(), 0)) if status != pywraplp.Solver.INFEASIBLE else None,
-                        'sol': self.extract_solution(status, m, n)
+                        'sol': [[] for _ in range(m)]  # Initialize empty solution list
                     }
+
+                    # Extract solution
+                    if status == pywraplp.Solver.OPTIMAL or status == pywraplp.Solver.FEASIBLE:
+                        for i in range(m):
+                            current_node = n  # Start from the depot
+                            while True:
+                                next_node = None
+                                for j in range(n + 1):
+                                    if self.X[(i, current_node, j)].solution_value() > 0.5:
+                                        next_node = j
+                                        break
+                                if next_node is None or next_node == n:  # Stop if no more nodes or back to depot
+                                    break
+                                result['sol'][i].append(next_node + 1)  # Append 1-based index of the node
+                                current_node = next_node
 
                     # Output result if feasible solution was found
                     if result['sol']:
@@ -164,27 +178,6 @@ class MIPSolver:
                         print(f"No solution found for instance {instance_num} with solver {solver_name}.")
 
         return result
-
-
-    def extract_solution(self, status, m, n):
-        """Helper function to extract solution if feasible."""
-        if status not in {pywraplp.Solver.OPTIMAL, pywraplp.Solver.FEASIBLE}:
-            return None
-
-        solution = [[] for _ in range(m)]
-        for i in range(m):
-            current_node = n
-            while True:
-                next_node = None
-                for j in range(n + 1):
-                    if self.X[(i, current_node, j)].solution_value() > 0.5:
-                        next_node = j
-                        break
-                if next_node is None or next_node == n:
-                    break
-                solution[i].append(next_node + 1)
-                current_node = next_node
-        return solution
 
 
 
