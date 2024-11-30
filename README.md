@@ -53,7 +53,7 @@ To retrieve the folder where there are the results you have to run the following
 "/res" is the folder where the results are saved on the container, "local_path" is the path on your computer where to save the results folder. 
 
 If the image is available, you need to load it on docker: <br>
-<code>docker load -i name_image.tar</code> <br>
+<code>docker load -i cdmo.tar</code> <br>
 Thus, you can run the container using the previous command.
 This is the only way to use GUROBI solver for MIP, because the licence is required during the solver installation. <br>
 **Important**: <br>
