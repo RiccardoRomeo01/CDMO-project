@@ -16,7 +16,7 @@ pip install -r requirements.txt
 ```
 
 ## Execution
-All the solvers can be used by running the file main.py with the command <code>python main.py</code> and the following arguments:
+All the solvers can be used by running the file main.py with the command ``` python main.py [arguments] ``` with the following arguments:
 
 | **Option**               | **Description**                                                                                                                                                         | **Values/Defaults**                                                                                                         |
 |---------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------|
@@ -34,6 +34,8 @@ All the solvers can be used by running the file main.py with the command <code>p
 **Examples of execution lines**:
 ```
 python main.py -a mip -n 1 -sv SCIP -b sb
+```
+```
 python main.py -a sat -n 4 -t 300 -s binary -e he -f fair -b sb
 ```
 
