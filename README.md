@@ -65,18 +65,30 @@ Once the image is built, you can run it as a container. This will execute the pr
   ```
   - Replace `command` with the actual Python comman that start the project (e.g. `python main.py`)
 
-### 4. Removing old results
+### 4. Loading a Docker image
+>[!IMPORTANT]
+>This section is essential if you want to run the GUROBI solver for MIP models.
+To obtain the Docker image already created without the needed to build it, you have to pull the image from the Docker hub with this code:
+```
+sudo docker pull mattibuzzo/cdmo-project:latest
+```
+>[!WARNING]
+>To run this image the name to keep in mind is the entire `mattibuzzo/cdmo-project`.
+
+### 5. Removing old results
+>[!IMPORTANT]
+>This section is needed only with the already built Docker image, if you want to retrive the result that you want to run, instead of having the result that are computed.
 To avoid overwriting old results, you may want to delete the `/res` folder before running the container again.
 - Start a temporary container in interactive mode:
   ```
-  docker run -it --name temp-container cdmo /bin/bash
+  docker run -it --name temp-container mattibuzzo/cdmo-project /bin/bash
   ```
 - Delete the `/res` folder:
   ```
   rm -rf /res
   ```
 
-### 5. Retrieve results from the container
+### 6. Retrieve results from the container
 After running the container, you may want to retrieve the resutls saved inside the container. 
 - Find the name of the container: use the following command to list all containers, both running and stopped, and find the `container_name` of the one you just ran:
   ```
@@ -87,14 +99,6 @@ After running the container, you may want to retrieve the resutls saved inside t
   docker cp container_name:/res local_path
   ```
   - Replace `local_path` with the path on your local machine where you want to save the results.
-
-### 6. Loading a Docker image (If you want to use GUROBI solver)
-To obtain the Docker image already created without the needed to build it, you have to pull the image from the Docker hub with this code:
-```
-sudo docker pull mattibuzzo/cdmo-project:latest
-```
->[!WARNING]
->To run this image the name to keep in mind is the entire `mattibuzzo/cdmo-project`.
 
 ---
 ## Authors
