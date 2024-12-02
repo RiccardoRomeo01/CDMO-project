@@ -76,6 +76,9 @@ sudo docker pull mattibuzzo/cdmo-project:latest
 ```
 2. Use `mattibuzzo/cdmo-project` as the image name when running commands.
 
+>[!TIP]
+>You can download the Docker image from [Docker Hub cdmo-project](https://hub.docker.com/r/mattibuzzo/cdmo-project).
+
 ### 5. Removing old results
 >[!IMPORTANT]
 >This section is specific if you are using the prebuilt image.
