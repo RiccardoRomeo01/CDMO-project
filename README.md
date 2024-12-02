@@ -43,18 +43,19 @@ python main.py -a sat -n 4 -t 300 -s binary -e he -f fair -b sb
 ## Execution on Docker
 
 ### 1. Install Docker
-Before proceeding, you need to install Docker on your machine. You can download Docker Desktop from the official website [here](https://www.docker.com/products/docker-desktop/).
+First, intall Docker on your machine. You can download Docker Desktop from the official website: [Docker Desktop](https://www.docker.com/products/docker-desktop/).
 
 ### 2. Build the Docker Image
-Once Docker is installed, you'll need to build a custom Docker image for your project. To do this, follow these steps:
-- Navigate to your project directory where the Dockerfile is located.
-- Build the Docker image by running the following command:
+Once Docker is installed, follow these steps to build a custom Docker image:
+1. Go to your project folder, where the `Dockerfile` is located.
+2. Build the Docker image by running:
   ```
   docker build -t name_image .
   ```
-  - `name_image` is the name you want to give to your Docker image. The `.` refers to the current directory, where Docker will look for the Dockerfile to build the image.
+  - Replace `name_image` with a name for your Docker image.
+  - The `.` indicates the current directory, where Docker will look for the `Dockerfile`.
 
-> [!WARNING]
+> [!NOTE]
 > **GUROBI solver** (which is used for MIP part) requires a valid license, and the license is not valid of the solver is running on another machine. This is why you need to run the solver in a Docker container where the license is valid. Follow the steps below to properly configure the container
 
 ### 3. Run the Docker Container
