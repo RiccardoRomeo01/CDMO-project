@@ -50,9 +50,9 @@ Once Docker is installed, follow these steps to build a custom Docker image:
 1. Go to your project folder, where the `Dockerfile` is located.
 2. Build the Docker image by running:
   ```
-  docker build -t name_image .
+  docker build -t <name_image> .
   ```
-  - Replace `name_image` with a name for your Docker image.
+  - Replace `<name_image>` with a name for your Docker image.
   - The `.` indicates the current directory, where Docker will look for the `Dockerfile`.
 
 > [!NOTE]
@@ -61,7 +61,7 @@ Once Docker is installed, follow these steps to build a custom Docker image:
 ### 3. Run the Docker Container
 Once the Docker image is built, you can run the project inside a container. Use this command:
   ```
-  docker run name_image command
+  docker run <name_image> command
   ```
   - Replace `command` with the command to start the project, like `python main.py`
 
