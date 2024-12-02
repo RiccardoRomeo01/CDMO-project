@@ -83,12 +83,12 @@ sudo docker pull mattibuzzo/cdmo-project:latest
 >[!IMPORTANT]
 >This section is specific if you are using the prebuilt image.
 
-To remove prevoius results, follow these steps:
+To remove previous results, follow these steps:
 1. Start a temporary container in interactive mode:
   ```
   docker run -it --name temp-container mattibuzzo/cdmo-project /bin/bash
   ```
-2. Inside the container, selete the `/res` folder:
+2. Inside the container, delete the `/res` folder:
   ```
   rm -rf /res
   ```
