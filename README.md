@@ -78,16 +78,23 @@ After running the container, you may want to retrieve the resutls saved inside t
   - Replace `local_path` with the path on your local machine where you want to save the results.
 
 ### 5. Removing old results
-To avoid overwriting old results, you may want to delete the <code>/res</code> folder before running the container again.
-- Start a temporary container in interactive mode: <code>docker run -it --name temp-container cdmo /bin/bash</code> <br>
-- Delete the <code>/res</code> folder: inside the container, run the following command to remove the <code>/res</code> folder: <code>rm -rf /res</code> <br>
+To avoid overwriting old results, you may want to delete the `/res` folder before running the container again.
+- Start a temporary container in interactive mode:
+  ```
+  docker run -it --name temp-container cdmo /bin/bash
+  ```
+- Delete the `/res` folder:
+  ```
+  rm -rf /res
+  ```
 
 ### 6. Loading a Docker image (If you want to use GUROBI solver)
-If you have a Docker image saved as a <code>.tar</code> file (e.g. <code>cdmo.tar</code>), you can load it into Docker with the following command: <code>docker load -i cdmo.tar</code>
-
-
-### 7. Decompress the Docker image
-If the <code>.tar</code> file is compressed (e.g. <code>cdmo.tar.xz</code>), you will need to decompress it first. Use this command to extract the contents: <code>tar -xJvf cdmo.tar.xz</code>
+To obtain the Docker image already created without the needed to build it, you have to pull the image from the Docker hub with this code:
+```
+sudo docker pull mattibuzzo/cdmo-project:latest
+```
+>[!WARNING]
+>To run this image the name of the image to keep in mind is the entire `mattibuzzo/cdmo-project:latest`.
 
 ---
 ## Authors
