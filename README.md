@@ -72,7 +72,7 @@ Once the Docker image is built, you can run the project inside a container. Use 
 To use the prebuilt Docker image:
 1. Pull the image from Docker Hub:
 ```
-sudo docker pull mattibuzzo/cdmo-project:latest
+docker pull mattibuzzo/cdmo-project:latest
 ```
 2. Use `mattibuzzo/cdmo-project` as the image name when running commands.
 
