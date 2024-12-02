@@ -49,7 +49,9 @@ Before proceeding, you need to install Docker on your machine. You can download 
 Once Docker is installed, you'll need to build a custom Docker image for your project. To do this, follow these steps:
 - Navigate to your project directory where the Dockerfile is located.
 - Build the Docker image by running the following command:
-  ```docker build -t name_image .```
+  ```
+  docker build -t name_image .
+  ```
 **name_image** is the name you want to give to your Docker image. The `.` refers to the current directory, where Docker will look for the Dockerfile to build the image.
 
 > [!WARNING]
