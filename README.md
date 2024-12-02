@@ -59,47 +59,50 @@ Once Docker is installed, follow these steps to build a custom Docker image:
 > **GUROBI** solver, used for MIP problems, requires a valid license. The license won't work if the solver is executed on another machine. Ensure the solver runs in a Docker container with the correct license configuration.
 
 ### 3. Run the Docker Container
-Once the image is built, you can run it as a container. This will execute the project inside the container.
-- To start the container, use the following command:
+Once the Docker image is built, you can run the project inside a container. Use this command:
   ```
   docker run name_image command
   ```
-  - Replace `command` with the actual Python comman that start the project (e.g. `python main.py`)
+  - Replace `command` with the command to start the project, like `python main.py`
 
-### 4. Loading a Docker image
+### 4. Using a Prebuilt Docker Image
 >[!IMPORTANT]
 >This section is essential if you want to run the GUROBI solver for MIP models.
-To obtain the Docker image already created without the needed to build it, you have to pull the image from the Docker hub with this code:
+
+To use the prebuilt Docker image:
+1. Pull the image from Docker Hub:
 ```
 sudo docker pull mattibuzzo/cdmo-project:latest
 ```
->[!WARNING]
->To run this image the name to keep in mind is the entire `mattibuzzo/cdmo-project`.
+2. Use `mattibuzzo/cdmo-project` as the image name when running commands.
 
 ### 5. Removing old results
 >[!IMPORTANT]
->This section is needed only with the already built Docker image, if you want to retrive the result that you want to run, instead of having the result that are computed.
-To avoid overwriting old results, you may want to delete the `/res` folder before running the container again.
-- Start a temporary container in interactive mode:
+>This section is specific if you are using the prebuilt image.
+
+To remove prevoius results, follow these steps:
+1. Start a temporary container in interactive mode:
   ```
   docker run -it --name temp-container mattibuzzo/cdmo-project /bin/bash
   ```
-- Delete the `/res` folder:
+2. Inside the container, selete the `/res` folder:
   ```
   rm -rf /res
   ```
 
 ### 6. Retrieve results from the container
-After running the container, you may want to retrieve the resutls saved inside the container. 
-- Find the name of the container: use the following command to list all containers, both running and stopped, and find the `container_name` of the one you just ran:
+After running the container, you can copy the results saved inside it to your local machine:
+1. Find the container name:
   ```
   docker ps -a
   ```
-- Copy the results folder to your local machine: to retrieve the results stored in the <code>/res</code> folder inside the container, use the command:
+  This command lists all containers, running or stopped.
+2. Copy the `/res` folder from the container to your local machine:
   ```
   docker cp container_name:/res local_path
   ```
-  - Replace `local_path` with the path on your local machine where you want to save the results.
+  - Replace `container_name` with the name of your container.
+  - Replace `local_path` with the directory on your computer where you want to save the results.
 
 ---
 ## Authors
