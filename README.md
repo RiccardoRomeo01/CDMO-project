@@ -100,6 +100,7 @@ After running the container, you can copy the results saved inside it to your lo
   docker ps -a
   ```
   This command lists all containers, running or stopped.
+
 2. Copy the `/res` folder from the container to your local machine:
   ```
   docker cp container_name:/res local_path
