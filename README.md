@@ -103,10 +103,10 @@ After running the container, you can copy the results saved inside it to your lo
 
 2. Copy the `/res` folder from the container to your local machine:
   ```
-  docker cp container_name:/res local_path
+  docker cp <container_name>:/res /path/on/host
   ```
-  - Replace `container_name` with the name of your container.
-  - Replace `local_path` with the directory on your computer where you want to save the results.
+  - Replace `<container_name>` with the name of your container.
+  - Replace `/path/on/host` with the directory on your computer where you want to save the results.
 
 ---
 ## Authors
