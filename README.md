@@ -56,7 +56,7 @@ Once Docker is installed, follow these steps to build a custom Docker image:
   - The `.` indicates the current directory, where Docker will look for the `Dockerfile`.
 
 > [!NOTE]
-> **GUROBI solver** (which is used for MIP part) requires a valid license, and the license is not valid of the solver is running on another machine. This is why you need to run the solver in a Docker container where the license is valid. Follow the steps below to properly configure the container
+> **GUROBI** solver, used for MIP problems, requires a valid license. The license won't work if the solver is executed on another machine. Ensure the solver runs in a Docker container with the correct license configuration.
 
 ### 3. Run the Docker Container
 Once the image is built, you can run it as a container. This will execute the project inside the container.
