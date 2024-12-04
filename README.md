@@ -96,7 +96,7 @@ To remove previous results, follow these steps:
 ```
 python main.py -a <model> -n <instance_number>
 ```
-4. Use the `exit` to close the interactive mode in the container.
+4. Use `exit` command to close the interactive mode in the container.
 
 ### 6. Retrieve results from the container
 After running the container, you can copy the results saved inside it to your local machine:
