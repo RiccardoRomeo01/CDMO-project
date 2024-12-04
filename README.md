@@ -94,8 +94,10 @@ To remove previous results, follow these steps:
   ```
 3. Insert the command to run the models, as the following example:
 ```
-python main.py -a <model> -n <instance_number>
+python main.py <options>
 ```
+  - Replace `<options>` with the appropriate flags listed in the table above. 
+
 4. Use `exit` command to close the interactive mode in the container.
 
 ### 6. Retrieve results from the container
