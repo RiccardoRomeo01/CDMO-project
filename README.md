@@ -108,6 +108,8 @@ After running the container, you can copy the results saved inside it to your lo
   - Replace `<container_name>` with the name of your container.
   - Replace `/path/on/host` with the directory on your computer where you want to save the results.
 
+>[!TIP]
+>The `<container_name>` refers to `temp-container`, which was named earlier.
 ---
 ## Authors
   - [Mattia Buzzoni](https://github.com/mattibuzzo13) 
