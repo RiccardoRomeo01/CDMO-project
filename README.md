@@ -93,9 +93,9 @@ To remove previous results, follow these steps:
   rm -rf /res
   ```
 3. Insert the command to run the models, as the following example:
-   ```
-   python main.py -a <model> -n <instance_number>
-   ```
+```
+python main.py -a <model> -n <instance_number>
+```
 4. Use the `exit` to close the interactive mode in the container.
 
 ### 6. Retrieve results from the container
