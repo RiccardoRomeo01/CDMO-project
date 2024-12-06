@@ -65,7 +65,7 @@ def main():
             data=input_data, 
             output_dir=args.output_dir, 
             symmetry_breaking = args.symmetry_breaking,
-            solver_name=args.strategy,
+            solver_name=args.solver,
             timeout=int(args.timeout)
         ) 
     elif args.approach == "sat":
